@@ -17,6 +17,7 @@ git pull origin main
 python -m venv venv
 source .\venv\Scripts\activate # ویندوز: .\venv\Scripts\activate
 ```
+و .`env.example` رو با تغییرات مدنظرتان در `.env` کپی کنید
 
 2. یک برنچ برای تغییرات خود بسازید
 ```bash
