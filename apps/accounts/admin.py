@@ -15,3 +15,38 @@ class CustomUserAdmin(UserAdmin):
     search_fields = ('username','get_full_name')
     date_hierarchy = 'date_joined'
     ordering = ('last_login','date_joined','first_name','last_name','id',)
+
+    add_fieldsets = (
+        (None, {
+            'classes':('wide',),
+            'fields': (
+                'username','email','first_name','last_name','password1','password2'
+            ),
+        }),
+    )
+    fieldsets = (
+        (None, {
+            'classes':('wide',),
+            'fields': (
+                'username','email','password'
+            ),
+        }),
+        ('personal_info', {
+            'classes':('wide',),
+            'fields': (
+                'first_name','last_name',
+            ),
+        }),
+        ('date&times', {
+            'classes':('collapse',),
+            'fields': (
+               'date_joined','last_login' 
+            ),
+        }),
+        ('advanced', {
+            'classes':('collapse',),
+            'fields': (
+                'is_active','is_staff','is_superuser','groups','user_permissions'
+            ),
+        }),
+    )
