@@ -1,3 +1,108 @@
 from django.contrib import admin
+from .models import Question, Answer
 
-# Register your models here.
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    """Admin View for Question"""
+
+    list_display = (
+        "name",
+        "is_active",
+        "solved",
+        "is_pin",
+        "write_date",
+        "solve_date",
+    )
+    list_filter = (
+        "is_active",
+        "solved",
+        "is_pin",
+        "write_date",
+        "solve_date",
+    )
+    readonly_fields = ("write_date", "solve_date")
+    search_fields = ("name", "question_description")
+    date_hierarchy = "write_date"
+    ordering = ("-write_date", "-solve_date")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "question_description",
+                ),
+            },
+        ),
+        (
+            "اطلاعات پیشرفته",
+            {
+                "fields": (
+                    "is_active",
+                    "solved",
+                    "is_pin",
+                ),
+            },
+        ),
+        (
+            "تاریخ ها",
+            {
+                "fields": (
+                    "write_date",
+                    "solve_date",
+                ),
+            },
+        ),
+    )
+
+
+@admin.register(Answer)
+class QuestionAdmin(admin.ModelAdmin):
+    """Admin View for Answer"""
+
+    list_display = (
+        "name",
+        "is_active",
+        "is_best" "is_pin",
+        "write_date",
+    )
+    list_filter = (
+        "is_active",
+        "is_best",
+        "is_pin",
+        "write_date",
+    )
+    readonly_fields = ("write_date",)
+    search_fields = ("name", "answer_description")
+    date_hierarchy = "write_date"
+    ordering = ("-write_date",)
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "answer_description",
+                ),
+            },
+        ),
+        (
+            "اطلاعات پیشرفته",
+            {
+                "fields": (
+                    "is_active",
+                    "is_best",
+                    "is_pin",
+                ),
+            },
+        ),
+        (
+            "تاریخ ها",
+            {
+                "fields": ("write_date",),
+            },
+        ),
+    )
