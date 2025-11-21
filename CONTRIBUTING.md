@@ -1,4 +1,4 @@
-# how to contribute؟ | چطور مشارکت کنیم؟
+# How to contribute? | چطور مشارکت داشته باشیم؟
 <!-- ## english version -->
 <!-- TODO -->
 
