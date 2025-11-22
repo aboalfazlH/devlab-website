@@ -23,10 +23,7 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = [
-    "tailwind",
-]
-
+THIRD_PARTY_APPS = ["tailwind","theme"]
 LOCAL_APPS = [
     "apps.accounts",
     "apps.core",
@@ -35,6 +32,8 @@ LOCAL_APPS = [
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
+TAILWIND_APP_NAME = "theme"
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -109,3 +108,4 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+NPM_BIN_PATH = r"C:\Program Files\nodejs\npm.cmd"
