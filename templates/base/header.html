@@ -1,42 +1,37 @@
-<header class="p-3 text-bg-dark">
+<header class="p-3 text-bg-dark" dir="rtl">
     <div class="container">
-        <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <span class="fs-4">آزمایشگاه توسعه</span>
-            <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+        <div class="d-flex flex-wrap align-items-center justify-content-between">
+            <span class="fs-4 text-white">آزمایشگاه توسعه</span>
+
+            <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="{% url 'core:home-page' %}" class="nav-link px-2 text-secondary">صفحه اصلی</a></li>
-                <li><a href="#" class="nav-link px-2 text-white">خدمات</a></li>
                 <li><a href="#" class="nav-link px-2 text-white">بلاگ</a></li>
                 <li><a href="#" class="nav-link px-2 text-white">درباره ما</a></li>
                 <li><a href="#" class="nav-link px-2 text-white">تماس با ما</a></li>
             </ul>
-            <form class="row g-2 align-items-center" role="search">
-                <div class="col-10">
-                    <input type="search" class="form-control form-control-dark bg-dark text-light" placeholder="جستجو..." />
-                </div>
-                <div class="col-1">
-                    <button type="submit" class="btn w-100"></button>
-                </div>
+
+            <form class="d-flex align-items-center me-3" role="search">
+                <input type="search" class="form-control form-control-dark bg-dark text-light me-2"
+                    placeholder="جستجو..." />
+                <button type="submit" class="btn btn-outline-light">جستجو</button>
             </form>
 
-            <div class="text-end">
-
+            <div class="d-flex align-items-center gap-2">
                 {% if user.is_authenticated %}
-                <a href="#" type="button" class="btn btn-outline-light me-2">
-                    {{ user }}{% if user.get_fullname is not None %}|{{ user.get_fullname }}{% endif %}
+                <a href="#" class="btn btn-outline-light">
+                    {{ user }}
                 </a>
-                <a href="#" type="button" class="btn btn-danger">خروج</a>
-
+                <form action="{% url 'logout' %}" method="post" class="m-0">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">خروج</button>
+                </form>
                 {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" type="button" class="btn btn-primary">داشبورد</a>
+                <a href="{% url 'admin:index' %}" class="btn btn-primary">داشبورد</a>
                 {% endif %}
-
                 {% else %}
-                <a href="#" type="button" class="btn btn-outline-light me-2">
-                    ورود
-                </a>
-                <a href="#" type="button" class="btn btn-warning">ثبت نام</a>
+                <a href="{% url 'login' %}" class="btn btn-outline-light">ورود</a>
+                <a href="{% url 'sign-up' %}" class="btn btn-warning">ثبت نام</a>
                 {% endif %}
-
             </div>
         </div>
     </div>
