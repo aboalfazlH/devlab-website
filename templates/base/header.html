@@ -1,17 +1,40 @@
-<header>
-    <nav>
-        <ul>
-            <li><a href="{# url '' #}">صفحه اصلی</a></li>
-            <li><a href="{# url '' #}">ثبت نام</a></li>
-            <li><a href="{# url '' #}">ورود</a></li>
-            <li><a href="{# url '' #}">{{ user }}</a></li>
-            <li><a href="{# url '' #}">خروج</a></li>
-            <li>
-                <form action="" method="get">
-                    <input type="text" placeholder="جستجو">
-                    <button type="submit">جستجو</button>
-                </form>
-            </li>
-        </ul>
-    </nav>
+<header class="bg-gray-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center h-16">
+            <div class="flex-shrink-0">
+                <a href="#" class="text-xl font-bold text-indigo-400">سایت من</a>
+            </div>
+            <nav class="hidden md:flex space-x-6 rtl:space-x-reverse">
+                <a href="#" class="hover:text-indigo-400 transition">خانه</a>
+                <a href="#" class="hover:text-indigo-400 transition">درباره</a>
+                <a href="#" class="hover:text-indigo-400 transition">وبلاگ</a>
+                <a href="#" class="hover:text-indigo-400 transition">خدمات</a>
+                <a href="#" class="hover:text-indigo-400 transition">تماس با ما</a>
+            </nav>
+            <div class="md:hidden">
+                <button id="menu-btn" class="text-white focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div id="mobile-menu" class="md:hidden hidden px-4 pb-4 space-y-2 rtl:text-right">
+        <a href="#" class="block hover:text-indigo-400">خانه</a>
+        <a href="#" class="block hover:text-indigo-400">درباره</a>
+        <a href="#" class="block hover:text-indigo-400">وبلاگ</a>
+        <a href="#" class="block hover:text-indigo-400">خدمات</a>
+        <a href="#" class="block hover:text-indigo-400">قیمت‌ها</a>
+        <a href="#" class="block hover:text-indigo-400">تماس با ما</a>
+    </div>
 </header>
+
+<script>
+    const btn = document.getElementById('menu-btn');
+    const menu = document.getElementById('mobile-menu');
+    btn.addEventListener('click', () => {
+        menu.classList.toggle('hidden');
+    });
+</script>
