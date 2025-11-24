@@ -8,6 +8,7 @@ urlpatterns = [
     path('accounts/',include('apps.accounts.urls')),
     path('blog/',include('apps.blog.urls')),
     path('',include('apps.core.urls')),
+    path('api/',include('apps.api.urls')),
 ]
 
 if settings.DEBUG:
