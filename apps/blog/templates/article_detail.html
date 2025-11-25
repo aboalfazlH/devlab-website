@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+
+{% block title %}{{ article.title }}{% endblock %}
+
+{% block meta %}
+<meta name="description" content="{{ article.title }}">
+{% endblock %}
+
+{% block styles %}
+<style>
+    .article-img {
+        max-height: 350px;
+        object-fit: cover;
+        border-radius: 12px;
+    }
+
+    .article-description {
+        line-height: 1.9;
+        font-size: 1.05rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container my-5" dir="rtl">
+
+    <h1 class="fw-bold text-center mb-4">{{ article.title }}</h1>
+
+    <div class="row align-items-center">
+
+        {% if article.thumbnail %}
+        <div class="col-md-4 text-center mb-4 mb-md-0">
+            <img src="{{ article.thumbnail.url }}" class="img-fluid article-img shadow-sm" alt="{{ article.title }}">
+        </div>
+        {% endif %}
+
+        <div class="col-md-8">
+            <div class="text-muted small mb-2">
+                نویسنده: <strong>{{ article.author }}</strong>
+                <span class="mx-2">|</span>
+                {{ article.write_date|timesince }} قبل
+            </div>
+
+            <div class="article-description">
+                {% if article.description %}
+                {{ article.description|safe }}
+                {% else %}
+                <p class="text-danger">برای این مقاله توضیحی ثبت نشده.</p>
+                {% endif %}
+            </div>
+
+            <div class="mt-4">
+                <button class="btn btn-outline-success btn-sm" onclick="copyLink()">کپی لینک</button>
+            </div>
+        </div>
+
+    </div>
+
+    <hr class="my-4">
+
+    <a href="{% url 'blog:articles' %}" class="btn btn-dark w-100">
+        بازگشت به لیست مقالات
+    </a>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function copyLink() {
+        navigator.clipboard.writeText(window.location.href);
+        alert('لینک کپی شد!');
+    }
+</script>
+{% endblock %}

@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView,DetailView
 from .models import Article
 from .forms import ArticleForm
 from django.http import HttpResponseForbidden
@@ -40,3 +40,11 @@ class ArticleCreateView(CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+class ArticleDetailView(DetailView):
+    model = Article
+    template_name = "article_detail.html"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    context_object_name = "article"

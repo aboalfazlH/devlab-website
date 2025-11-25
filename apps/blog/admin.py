@@ -46,7 +46,7 @@ class ArticleAdmin(admin.ModelAdmin):
             "اطلاعات اصلی",
             {
                 "classes": ("wide",),
-                "fields": ("title", "short_description", "description", "thumbnail"),
+                "fields": ("title", "short_description", "description", "thumbnail","slug"),
             },
         ),
         (
