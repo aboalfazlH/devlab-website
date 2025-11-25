@@ -1,4 +1,4 @@
-from django.views.generic import ListView, CreateView, DetailView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView
 from .models import Article
 from .forms import ArticleForm
 from django.http import HttpResponseForbidden
@@ -6,6 +6,8 @@ from django.utils.timezone import now
 from django.urls import reverse_lazy
 from django.contrib import messages
 from apps.accounts.models import CustomUser
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
 
 class ArticleListView(ListView):
@@ -19,13 +21,15 @@ class ArticleListView(ListView):
         return Article.objects.filter(is_active=True).order_by("-is_pin", "-write_date")
 
 
-class ArticleCreateView(CreateView):
+class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
     form_class = ArticleForm
     template_name = "write_article.html"
     success_url = reverse_lazy("core:home-page")
 
     def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return super().dispatch(request, *args, **kwargs)
         today = now().date()
         articles_today = Article.objects.filter(
             author=request.user, write_date__date=today
@@ -45,6 +49,27 @@ class ArticleCreateView(CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
+
+class ArticleUpdateView(UpdateView):
+    form_class = ArticleForm
+    model = Article
+    template_name = "update_article.html"
+    context_object_name = "article"
+    slug_url_kwarg = "slug"
+    slug_field = "slug"
+    success_url = reverse_lazy("blog:articles")
+
+    def form_valid(self, form):
+        messages.success(self.request, "تغییرات شما ثبت شد✅")
+        return super().form_valid(form)
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if obj.author != request.user:
+            messages.error(request, "شما نمی توانید این مقاله را تغییر دهید")
+            return redirect(self.success_url)
+        return super().dispatch(request, *args, **kwargs)
 
 
 class ArticleDetailView(DetailView):
