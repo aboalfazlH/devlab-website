@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+{% block title %}
+نوشتن مقاله
+{% endblock title %}
+{% block content %}
+<h2>مقاله بنویس</h2>
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-succes">ثبت مقاله</button>
+</form>
+{% endblock content %}

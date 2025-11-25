@@ -1,37 +1,46 @@
 <header class="p-3 text-bg-dark" dir="rtl">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-between">
-            <span class="fs-4 text-white">آزمایشگاه توسعه</span>
+            <span class="text-white fs-5 fs-sm-4 fs-md-3 fs-lg-2">
+                آزمایشگاه توسعه
+            </span>
 
-            <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
-                <li><a href="{% url 'core:home-page' %}" class="nav-link px-2 text-secondary">صفحه اصلی</a></li>
-                <li><a href="{% url 'blog:articles' %}" class="nav-link px-2 text-white">بلاگ</a></li>
-                <li><a href="{% url 'core:about-us-page' %}" class="nav-link px-2 text-white">درباره ما</a></li>
-                <li><a href="{% url 'core:contact-us-page' %}" class="nav-link px-2 text-white">تماس با ما</a></li>
-            </ul>
+            <button class="navbar-toggler btn btn-outline-light d-lg-none" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                ☰
+            </button>
 
-            <form class="d-flex align-items-center me-3" role="search">
-                <input type="search" class="form-control form-control-dark bg-dark text-light me-2"
-                    placeholder="جستجو..." />
-                <button type="submit" class="btn btn-outline-light">جستجو</button>
-            </form>
+            <div class="collapse d-lg-flex flex-lg-wrap align-items-center justify-content-between w-100"
+                id="navbarContent">
+                <ul class="nav col-12 col-lg-auto mb-2 justify-content-center mb-md-0">
+                    <li><a href="{% url 'core:home-page' %}" class="nav-link px-2 text-secondary">صفحه اصلی</a></li>
+                    <li><a href="{% url 'blog:articles' %}" class="nav-link px-2 text-white">بلاگ</a></li>
+                    <li><a href="{% url 'core:about-us-page' %}" class="nav-link px-2 text-white">درباره ما</a></li>
+                    <li><a href="{% url 'core:contact-us-page' %}" class="nav-link px-2 text-white">تماس با ما</a></li>
+                </ul>
 
-            <div class="d-flex align-items-center gap-2">
-                {% if user.is_authenticated %}
-                <a href="#" class="btn btn-outline-light">
-                    {{ user }}
-                </a>
-                <form action="{% url 'logout' %}" method="post" class="m-0">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">خروج</button>
+                <form class="d-flex align-items-center my-2 my-lg-0" role="search">
+                    <input type="search" class="form-control form-control-dark bg-dark text-light me-2"
+                        placeholder="جستجو..." />
+                    <button type="submit" class="btn btn-outline-light">جستجو</button>
                 </form>
-                {% if user.is_staff %}
-                <a href="{% url 'admin:index' %}" class="btn btn-primary">داشبورد</a>
-                {% endif %}
-                {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-light">ورود</a>
-                <a href="{% url 'sign-up' %}" class="btn btn-warning">ثبت نام</a>
-                {% endif %}
+
+                <div class="d-flex align-items-center gap-2 my-2 my-lg-0">
+                    {% if user.is_authenticated %}
+                    <a href="#" class="btn btn-outline-light">{{ user }}</a>
+                    <form action="{% url 'logout' %}" method="post" class="m-0">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">خروج</button>
+                    </form>
+                    {% if user.is_staff %}
+                    <a href="{% url 'admin:index' %}" class="btn btn-primary">داشبورد</a>
+                    {% endif %}
+                    {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-light">ورود</a>
+                    <a href="{% url 'sign-up' %}" class="btn btn-warning">ثبت نام</a>
+                    {% endif %}
+                </div>
             </div>
         </div>
     </div>

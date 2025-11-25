@@ -1,8 +1,6 @@
 {% extends 'base/base.html' %}
 
-{% block title %}
-لیست مقالات
-{% endblock title %}
+{% block title %}لیست مقالات{% endblock title %}
 
 {% block meta %}
 <meta name="description" content="لیست مقالات وبسایت">
@@ -10,39 +8,129 @@
 
 {% block styles %}
 <style>
-  .pagination {
-    margin-top: 20px;
-    text-align: center;
+  .article-card {
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+    transition: 0.3s;
+    cursor: pointer;
   }
-  .pagination a {
-    margin: 0 5px;
-    text-decoration: none;
+
+  .article-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
+  }
+
+  .pin {
+    border: 2px solid #ffc107 !important;
+    background: #fffbea !important;
+  }
+
+  .thumbnail {
+    width: 130px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  .thumbnail-placeholder {
+    width: 130px;
+    height: 90px;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #777;
+    font-size: 0.8rem;
+  }
+
+  .article-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .article-desc {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    margin-bottom: 8px;
+  }
+
+  .author-box {
+    font-size: 0.9rem;
+    color: #6c757d;
   }
 </style>
 {% endblock styles %}
 
 {% block content %}
-{% for article in articles %}
-  <div class="article">
-    <h2>{{ article.title }}</h2>
-    <p>{{ article.summary }}</p>
-    <a href="{{ article.get_absolute_url }}">ادامه مطلب</a>
-  </div>
-{% empty %}
-  <p>هیچ مقاله‌ای یافت نشد.</p>
-{% endfor %}
+<div class="container mt-4">
 
-{% if is_paginated %}
-  <div class="pagination">
-    {% if page_obj.has_previous %}
-      <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">قبلی</a>
+  {% for article in articles %}
+  <div class="article-card {% if article.is_pin %}pin{% endif %}"
+    onclick="window.location='{{ article.get_absolute_url }}';">
+
+    {% if article.thumbnail %}
+    <img src="{{ article.thumbnail.url }}" class="thumbnail" alt="{{ article.title }}">
+    {% else %}
+    <div class="thumbnail-placeholder">بدون تصویر</div>
     {% endif %}
 
-    <span>صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</span>
+    <div>
+      <h3 class="article-title">{{ article.title }}</h3>
+      <p class="article-desc">{{ article.short_description }}</p>
 
-    {% if page_obj.has_next %}
-      <a href="?page={{ page_obj.next_page_number }}{% if request.GET.query %}&query={{ request.GET.query }}{% endif %}">بعدی</a>
-    {% endif %}
+      <p class="author-box">
+        نویسنده:
+        {{ article.author.get_full_name|default:article.author.username }}
+        <span class="text-muted"> |{{ article.write_date|timesince }} قبل</span>
+      </p>
+
+      {% if article.is_pin %}
+      <span class="badge bg-warning text-dark">ویژه</span>
+      {% endif %}
+    </div>
   </div>
-{% endif %}
+  {% empty %}
+  <div class="alert alert-warning text-center">هیچ مقاله‌ای یافت نشد.</div>
+  {% endfor %}
+
+  {% if is_paginated %}
+  <nav aria-label="Page navigation" class="mt-4">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">قبلی</span></li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+      {% if num == page_obj.number %}
+      <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% else %}
+      <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">بعدی</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+</div>
 {% endblock content %}

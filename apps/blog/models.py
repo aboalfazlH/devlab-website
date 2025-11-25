@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from apps.accounts.models import CustomUser
 
 class Article(models.Model):
     """Model definition for Article."""
@@ -22,7 +22,7 @@ class Article(models.Model):
     is_active = models.BooleanField(verbose_name="فعال", default=True)
     is_verify = models.BooleanField(verbose_name="تائید شده", default=False)
     is_pin = models.BooleanField(verbose_name="ویژه", default=False)
-
+    author = models.ForeignKey(CustomUser,verbose_name="نویسنده",on_delete=models.CASCADE)
     @property
     def status(self):
         if self.is_active and self.is_verify and self.is_pin:
@@ -52,7 +52,9 @@ class Article(models.Model):
         self.is_active = False
         self.is_verify = False
         self.is_pin = False
-
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return #reverse('', kwargs={'pk': self.pk})
     def verify(self):
         self.verify_date = timezone.now()
         self.is_verify = True
