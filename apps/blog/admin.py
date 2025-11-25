@@ -5,7 +5,6 @@ from .models import Article
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     """Admin View for Article"""
-
     list_display = (
         "title",
         "is_active",
@@ -40,7 +39,7 @@ class ArticleAdmin(admin.ModelAdmin):
     )
     date_hierarchy = "write_date"
     ordering = ("-write_date", "is_active")
-
+    list_per_page = 20
     fieldsets = (
         (
             "اطلاعات اصلی",
@@ -73,3 +72,5 @@ class ArticleAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    

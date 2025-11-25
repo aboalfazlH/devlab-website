@@ -1,13 +1,18 @@
-from django.views.generic import ListView, CreateView, DetailView, UpdateView
+from django.views.generic import (
+    ListView,
+    CreateView,
+    DetailView,
+    UpdateView,
+    DeleteView,
+)
 from .models import Article
 from .forms import ArticleForm
 from django.http import HttpResponseForbidden
 from django.utils.timezone import now
 from django.urls import reverse_lazy
 from django.contrib import messages
-from apps.accounts.models import CustomUser
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
 
 class ArticleListView(ListView):
@@ -78,3 +83,33 @@ class ArticleDetailView(DetailView):
     slug_field = "slug"
     slug_url_kwarg = "slug"
     context_object_name = "article"
+
+
+class ArticleDeleteView(DeleteView):
+    model = Article
+    template_name = "article_delete.html"
+    slug_field = "slug"
+    slug_url_kwarg = "slug"
+    context_object_name = "article"
+    success_url = reverse_lazy("blog:articles")
+
+    def get(self, request, *args, **kwargs):
+        article = self.get_object()
+        return render(request, self.template_name, {"article": article})
+
+    def dispatch(self, request, *args, **kwargs):
+        article = self.get_object()
+        if not request.user.is_superuser and not request.user == article.author:
+            return HttpResponseForbidden("نمیتونی حذف کنی!")
+        return super().dispatch(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        article = self.get_object()
+
+        if request.user.is_superuser:
+            article.delete()
+            messages.success(request, "حذف شد")
+        elif request.user == article.author:
+            article.soft_delete()
+            messages.success(request, "حذف شد")
+        return redirect(self.success_url)

@@ -1,7 +1,10 @@
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from apps.accounts.models import CustomUser
 from django.template.defaultfilters import slugify
+from unidecode import unidecode
+import re
 
 
 class Article(models.Model):
@@ -61,27 +64,36 @@ class Article(models.Model):
         self.is_active = False
         self.is_verify = False
         self.is_pin = False
+        self.save()
 
     def get_absolute_url(self):
-        from django.urls import reverse
 
-        return reverse('blog:article-detail', kwargs={'slug': self.slug})
+        return reverse("blog:article-detail", kwargs={"slug": self.slug})
 
     def verify(self):
         self.verify_date = timezone.now()
         self.is_verify = True
+        self.save()
 
-    def save(
-        self,
-        force_insert=...,
-        force_update=...,
-        using=...,
-        update_fields=...,
-        *args,
-        **kwargs,
-    ):
-        if self.slug is None:
-            self.slug = slugify(self.title)
+    def save(self, *args, **kwargs):
+        if not self.slug or self.slug.strip() == "":
+            text = unidecode(self.title)
+            text = re.sub(r"[^\w\s-]", "", text)
+            text = re.sub(r"[-\s]+", "-", text)
+            base_slug = text.lower().strip("-_")
+
+            if not base_slug:
+                base_slug = "article"
+
+            slug = base_slug
+            counter = 1
+
+            while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
+                slug = f"{base_slug}-{counter}"
+                counter += 1
+
+            self.slug = slug
+
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+حذف {{ article }}
+{% endblock title %}
+
+{% block meta %}
+{% endblock meta %}
+
+{% block styles %}
+{% endblock styles %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <h2>مطمعنی میخوای {{ article }} رو حذف کنی؟</h2>
+    
+    {% if user.is_superuser %}
+    <p>این عمل قابل جبران نیست</p>
+    {% endif %}
+    <button class="btn btn-danger" type="submit">بله</button>
+    <a href="{% url 'blog:articles' %}" class="btn btn-info">خیر،برگرد</a>
+</form>
+{% endblock content %}
