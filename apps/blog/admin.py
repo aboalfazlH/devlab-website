@@ -72,5 +72,3 @@ class ArticleAdmin(admin.ModelAdmin):
             },
         ),
     )
-
-    

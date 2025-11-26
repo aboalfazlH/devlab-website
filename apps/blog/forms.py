@@ -9,4 +9,4 @@ class ArticleForm(forms.ModelForm):
         """Meta definition for ArticleForm."""
 
         model = Article
-        fields = ("title", "title","thumbnail","short_description","description",)
+        fields = ("title", "slug","thumbnail","short_description","description",)
