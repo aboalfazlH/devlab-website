@@ -4,11 +4,12 @@ from django.contrib import admin
 from django.conf import settings
 
 urlpatterns = [
+    path('summernote/', include('django_summernote.urls')),
     path('admin/', admin.site.urls),
     path('accounts/',include('apps.accounts.urls')),
     path('blog/',include('apps.blog.urls')),
-    path('',include('apps.core.urls')),
     path('api/',include('apps.api.urls')),
+    path('',include('apps.core.urls')),
 ]
 
 if settings.DEBUG:

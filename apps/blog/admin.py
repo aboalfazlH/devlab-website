@@ -1,9 +1,10 @@
 from django.contrib import admin
 from .models import Article
-
+from django_summernote.admin import SummernoteModelAdmin
 
 @admin.register(Article)
-class ArticleAdmin(admin.ModelAdmin):
+class ArticleAdmin(SummernoteModelAdmin):
+    summernote_fields = "description"
     """Admin View for Article"""
     list_display = (
         "title",
