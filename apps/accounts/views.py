@@ -62,3 +62,13 @@ class CustomUserDetailView(DetailView):
     def get_object(self, queryset=None):
         username = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(CustomUser, username__iexact=username)
+
+class UserDetailView(LoginRequiredMixin, DetailView):
+    model = CustomUser
+    template_name = "profile.html"
+    context_object_name = "profile"
+    slug_field = "username"
+    slug_url_kwarg = "username"
+
+    def get_object(self, queryset=None):
+        return self.request.user
