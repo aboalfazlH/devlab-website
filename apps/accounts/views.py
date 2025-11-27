@@ -1,8 +1,8 @@
-from .forms import CustomUserCreationForm, LoginForm
-from django.views.generic import CreateView, FormView, DetailView
+from .forms import CustomUserCreationForm, LoginForm, ProfileEditForm
+from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from django.urls import reverse_lazy
-from django.shortcuts import redirect,render,get_object_or_404
-from django.contrib.auth import authenticate, login,logout
+from django.shortcuts import redirect, render, get_object_or_404
+from django.contrib.auth import authenticate, login, logout
 from .models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -40,16 +40,16 @@ class LoginView(FormView):
         return super().dispatch(request, *args, **kwargs)
 
 
-class CustomLogoutView(LoginRequiredMixin,FormView):
+class CustomLogoutView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy("core:home-page")
+
     def get(self, request, *args, **kwargs):
-        return render(request,"logout-confirm.html")
-    
+        return render(request, "logout-confirm.html")
+
     def post(self, request, *args, **kwargs):
         logout(request)
-        messages.success(request,"با موفقیت خارج شدید")
+        messages.success(request, "با موفقیت خارج شدید")
         return redirect(self.success_url)
-
 
 
 class CustomUserDetailView(DetailView):
@@ -63,12 +63,23 @@ class CustomUserDetailView(DetailView):
         username = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(CustomUser, username__iexact=username)
 
+
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = "profile.html"
     context_object_name = "profile"
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_object(self, queryset=None):
+        return self.request.user
+
+
+class CustomUserUpdateView(UpdateView):
+    model = CustomUser
+    template_name = "user_update_profile.html"
+    form_class = ProfileEditForm
+    success_url = reverse_lazy("user-profile")
 
     def get_object(self, queryset=None):
         return self.request.user

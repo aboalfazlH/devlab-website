@@ -17,12 +17,11 @@ class CustomUserCreationForm(UserCreationForm):
         widgets = {
             "username": forms.TextInput(attrs={"placeholder": "نام کاربری"}),
             "email": forms.EmailInput(attrs={"placeholder": "ایمیل"}),
-            "first_name": forms.TextInput(attrs={"placeholder":"نام"}),
-            "last_name": forms.TextInput(attrs={"placeholder":"نام خانوادگی"}),
+            "first_name": forms.TextInput(attrs={"placeholder": "نام"}),
+            "last_name": forms.TextInput(attrs={"placeholder": "نام خانوادگی"}),
             "password1": forms.PasswordInput(),
             "password2": forms.PasswordInput(),
         }
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -32,11 +31,33 @@ class CustomUserCreationForm(UserCreationForm):
         self.fields["password1"].widget.attrs.update({"placeholder": "رمز عبور"})
         self.fields["password2"].widget.attrs.update({"placeholder": "تائید رمز عبور"})
 
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = "__all__"
 
+
 class LoginForm(forms.Form):
-    username = forms.CharField(widget=forms.TextInput(attrs={"placeholder":"نام کاربری یا ایمیل"}))
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder":"رمز"}))
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"})
+    )
+    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "رمز"}))
+
+
+class ProfileEditForm(forms.ModelForm):
+    """Form definition for ProfileEdit."""
+
+    class Meta:
+        """Meta definition for ProfileEditForm."""
+
+        model = CustomUser
+        fields = (
+            "first_name",
+            "last_name",
+            "avatar",
+            "about",
+            "bio",
+            "email",
+            "phone_number",
+        )
