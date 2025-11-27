@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.blog.models import Article
 
+
 class SignUpView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
@@ -67,10 +68,12 @@ class CustomUserDetailView(DetailView):
         context = super().get_context_data(**kwargs)
         user = context["profile"]
         context = super().get_context_data(**kwargs)
-        context["articles"] = Article.objects.filter(author=user,is_active=True).order_by("-write_date","views")[:10]
-        articles = Article.objects.filter(author=user)
+        context["articles"] = Article.objects.filter(
+            author=user, is_active=True
+        ).order_by("-write_date", "views")[:10]
 
         return context
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
@@ -81,6 +84,16 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = context["profile"]
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.filter(
+            author=user, is_active=True
+        ).order_by("-write_date", "-views")[:10]
+
+        return context
 
 
 class CustomUserUpdateView(UpdateView):
