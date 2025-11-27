@@ -2,6 +2,11 @@
 {% block title %}
 نوشتن مقاله
 {% endblock title %}
+
+{% block styles %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+{% endblock styles %}
+    
 {% block content %}
 <h2>مقاله بنویس</h2>
 <form action="" method="post" enctype="multipart/form-data">
@@ -10,3 +15,7 @@
     <button type="submit" class="btn btn-success">ثبت مقاله</button>
 </form>
 {% endblock content %}
+{% block scripts %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{% endblock scripts %}

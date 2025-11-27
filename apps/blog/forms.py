@@ -1,15 +1,24 @@
 from django import forms
 from .models import Article
-from django_summernote.widgets import SummernoteWidget
 
+
+# Form for creating/updating articles
 class ArticleForm(forms.ModelForm):
-    """Form definition for Article."""
-
     class Meta:
-        """Meta definition for ArticleForm."""
-
         model = Article
-        fields = ("title", "slug","thumbnail","short_description","description",)
+        fields = [
+            "title",
+            "slug",
+            "thumbnail",
+            "short_description",
+            "description",
+            "categories",
+        ]
         widgets = {
-            "description": SummernoteWidget(),
+            "description": forms.Textarea(
+                attrs={"class": "summernote"}
+            ),  # Summernote editor
+            "categories": forms.SelectMultiple(
+                attrs={"class": "django-select2"}
+            ),  # Select2 for categories
         }

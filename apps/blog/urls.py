@@ -6,6 +6,7 @@ from .views import (
     ArticleUpdateView,
     ArticleDeleteView,
     ArticlePinView,
+    CategoryAutocomplete,
 )
 
 app_name = "blog"
@@ -23,4 +24,9 @@ urlpatterns = [
         name="article-delete",
     ),
     path("article/<slug:slug>/pin/", ArticlePinView.as_view(), name="article-pin"),
+    path(
+        "select2/categories/",
+        CategoryAutocomplete.as_view(),
+        name="categories-autocomplete",
+    ),
 ]
