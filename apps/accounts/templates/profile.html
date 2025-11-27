@@ -102,7 +102,7 @@
         <div>
             <h2 class="profile-name">{{ profile.full_name|default:profile.username }}</h2>
             <p class="profile-username">@{{ profile.username }}</p>
-            
+
             {% comment %}
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
@@ -111,22 +111,33 @@
             </div>
             {% endif %}
             {% endcomment %}
-                
+
         </div>
     </div>
 
     {% if profile.about %}
     <div class="profile-section">
-        <h5>درباره کاربر</h5>
+        <h5>درباره {{ profile }}</h5>
         <p>{{ profile.about }}</p>
     </div>
     {% endif %}
 
     {% if profile.bio %}
     <div class="profile-section">
-        <h5>بیوگرافی</h5>
+        <h5>بیوگرافی {{ profile }}</h5>
         <p>{{ profile.bio|safe }}</p>
     </div>
+    {% endif %}
+
+    {% if articles %}
+    <h5>مقالات {{ profile }}</h5>
+    {% for article in articles %}
+    <article>
+        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+    </article>
+    {% endfor %}
+    {% else %}
+    <p>این کاربر هنوز مقاله‌ای منتشر نکرده است.</p>
     {% endif %}
 
     {% comment %}
@@ -142,8 +153,8 @@
         </a>
         {% endif %}
     </div>
-    
-    
+
+
     {% if profile.tech_stack %}
     <div class="profile-section profile-tech">
         <h5>تکنولوژی‌ها</h5>
@@ -153,11 +164,11 @@
     </div>
     {% endif %}
     {% endcomment %}
-    
+
     {% if profile == user %}
-        <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
-        <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
+    <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
+    <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
     {% endif %}
-        
+
 </div>
 {% endblock content %}

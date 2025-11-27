@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from .models import CustomUser
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
+from apps.blog.models import Article
 
 
 class SignUpView(CreateView):
@@ -26,8 +27,8 @@ class LoginView(FormView):
         user = authenticate(self.request, username=username, password=password)
 
         if user is not None:
-            messages.success(self.request, f"خوش آمدید {self.request.user}")
             login(self.request, user)
+            messages.success(self.request, f"خوش آمدید {self.request.user}")
             return super().form_valid(form)
 
         form.add_error(None, "نام کاربری یا رمز عبور اشتباه است.")
@@ -63,6 +64,16 @@ class CustomUserDetailView(DetailView):
         username = self.kwargs.get(self.slug_url_kwarg)
         return get_object_or_404(CustomUser, username__iexact=username)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = context["profile"]
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.filter(
+            author=user, is_active=True
+        ).order_by("-write_date", "views")[:10]
+
+        return context
+
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
@@ -73,6 +84,16 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
     def get_object(self, queryset=None):
         return self.request.user
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = context["profile"]
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.filter(
+            author=user, is_active=True
+        ).order_by("-write_date", "-views")[:10]
+
+        return context
 
 
 class CustomUserUpdateView(UpdateView):

@@ -25,7 +25,9 @@ class CustomUser(AbstractUser):
 
     def get_absolute_url(self):
         from django.urls import reverse
-        return reverse('users-profile', kwargs={'username': self.username})
+
+        return reverse("users-profile", kwargs={"username": self.username})
+
     def __str__(self):
         return (
             f"{self.username}" if self.get_full_name() is None else self.get_full_name()
