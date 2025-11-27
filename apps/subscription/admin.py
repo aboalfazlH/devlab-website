@@ -6,17 +6,18 @@ from .models import Subscription, SubscriptionPlan
 class SubscriptionAdmin(admin.ModelAdmin):
     """Admin View for Subscription"""
 
-    list_display = ("subscription_plan","subscription_user","start_date","end_date")
-    list_filter = ("subscription_plan","start_date","end_date")
-    search_fields = ("subscription__user_username","subscription_user__get_full_name")
+    list_display = ("subscription_plan", "subscription_user", "start_date", "end_date")
+    list_filter = ("subscription_plan", "start_date", "end_date")
+    search_fields = ("subscription__user_username", "subscription_user__get_full_name")
     date_hierarchy = "start_date"
     ordering = ("-end_date",)
 
+
 @admin.register(SubscriptionPlan)
 class SubscriptionPlanAdmin(admin.ModelAdmin):
-    '''Admin View for SubscriptionPlan'''
+    """Admin View for SubscriptionPlan"""
 
-    list_display = ('plan_name','price')
-    list_filter = ('price',)
-    search_fields = ('plan_name',)
-    ordering = ('plan_name',)
+    list_display = ("plan_name", "price","value")
+    list_filter = ("price",)
+    search_fields = ("plan_name",)
+    ordering = ("-value",)

@@ -6,8 +6,9 @@ from django.utils import timezone
 class SubscriptionPlan(models.Model):
     """Model definition for SubscriptionPlan."""
 
-    plan_name = models.CharField(verbose_name="")
-    price = models.PositiveIntegerField(verbose_name="")
+    plan_name = models.CharField(verbose_name="نام پلن")
+    price = models.PositiveIntegerField(verbose_name="قیمت",default=0)
+    value = models.PositiveIntegerField(verbose_name="ارزش پلن",default=0)
 
     class Meta:
         """Meta definition for SubscriptionPlan."""
@@ -41,13 +42,22 @@ class Subscription(models.Model):
 
         verbose_name = "اشتراک"
         verbose_name_plural = "اشتراک ها"
+
     def save(self, *args, **kwargs):
-        if Subscription.objects.filter(
-            subscription_user=self.subscription_user,
-            end_date__gte=timezone.now()
-        ).exclude(pk=self.pk).exists():
-            raise ValueError("این کاربر یک اشتراک فعال دارد و نمی‌تواند اشتراک جدید بگیرد.")
+        if (
+            Subscription.objects.filter(
+                subscription_user=self.subscription_user, end_date__gte=timezone.now()
+            )
+            .exclude(pk=self.pk)
+            .exists()
+        ):
+            raise ValueError(
+                "این کاربر یک اشتراک فعال دارد و نمی‌تواند اشتراک جدید بگیرد."
+            )
+        super().save(*args, **kwargs)
 
     def __str__(self):
         """Unicode representation of Subscription."""
-        return f"{self.subscription_user}-{self.subscription_plan}|{self.start_date} تا {self.end_date}"
+        start = self.start_date.strftime("%Y-%m-%d %H:%M")
+        end = self.end_date.strftime("%Y-%m-%d %H:%M")
+        return f"{self.subscription_user.get_full_name()} | {self.subscription_plan} | {start} تا {end}"
