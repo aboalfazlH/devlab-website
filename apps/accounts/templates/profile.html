@@ -1,5 +1,5 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block title %}پروفایل {{ profile.username }}{% endblock title %}
 
 {% block meta %}
@@ -7,89 +7,13 @@
 {% endblock meta %}
 
 {% block styles %}
-<style>
-    body {
-        background-color: #f6f8fa;
-        color: #24292f;
-    }
-
-    .profile-container {
-        max-width: 900px;
-        margin: 50px auto;
-        background-color: #fff;
-        border-radius: 12px;
-        border: 1px solid #e1e4e8;
-        padding: 30px;
-    }
-
-    .profile-avatar {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 1px solid #e1e4e8;
-        object-fit: cover;
-    }
-
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
-
-    .profile-name {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0;
-    }
-
-    .profile-username {
-        color: #57606a;
-        font-size: 1rem;
-    }
-
-    .profile-badges span {
-        margin-right: 10px;
-    }
-
-    .profile-section {
-        margin-top: 25px;
-    }
-
-    .profile-section h5 {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
-    .profile-section p,
-    .profile-section a {
-        margin-bottom: 8px;
-    }
-
-    .profile-tech span {
-        margin: 3px 3px 3px 0;
-    }
-
-    .profile-link {
-        display: inline-block;
-        padding: 4px 8px;
-        border: 1px solid #e1e4e8;
-        border-radius: 6px;
-        text-decoration: none;
-        color: #0366d6;
-        font-size: 0.875rem;
-    }
-
-    .profile-link:hover {
-        background-color: #f6f8fa;
-        border-color: #0366d6;
-    }
-</style>
+<link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock styles %}
 
 {% block content %}
 <div class="profile-container">
+
+    <!-- Header -->
     <div class="profile-header">
         {% if profile.avatar %}
         <img src="{{ profile.avatar.url }}" alt="Avatar" class="profile-avatar">
@@ -103,71 +27,89 @@
             <h2 class="profile-name">{{ profile.full_name|default:profile.username }}</h2>
             <p class="profile-username">@{{ profile.username }}</p>
 
-            {% comment %}
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
                 <span class="badge bg-primary">دنبال کنندگان: {{ profile.followers|default:"0" }}</span>
                 <span class="badge bg-secondary">دنبال شوندگان: {{ profile.following|default:"0" }}</span>
             </div>
             {% endif %}
-            {% endcomment %}
-
         </div>
     </div>
 
+    <!-- About -->
+    <h5>درباره {{ profile }}</h5>
     {% if profile.about %}
-    <div class="profile-section">
-        <h5>درباره {{ profile }}</h5>
+    <section class="profile-section">
         <p>{{ profile.about }}</p>
-    </div>
-    {% endif %}
-
-    {% if profile.bio %}
-    <div class="profile-section">
-        <h5>بیوگرافی {{ profile }}</h5>
-        <p>{{ profile.bio|safe }}</p>
-    </div>
-    {% endif %}
-
-    {% if articles %}
-    <h5>مقالات {{ profile }}</h5>
-    {% for article in articles %}
-    <article>
-        <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
-    </article>
-    {% endfor %}
+    </section>
     {% else %}
-    <p>این کاربر هنوز مقاله‌ای منتشر نکرده است.</p>
+    <section class="profile-section">
+        <p>{{ profile }} مرموز است و چیزی درباره خود ننوشته</p>
+    </section>
     {% endif %}
 
-    {% comment %}
-    <div class="profile-section">
+    <!-- Bio -->
+    <h5>بیوگرافی {{ profile }}</h5>
+    {% if profile.bio %}
+    <section class="profile-section">
+        <p>{{ profile.bio|safe }}</p>
+    </section>
+    {% else %}
+    <p>{{ profile }} چیزی در مورد خود ننوشته</p>
+    {% endif %}
+
+    <!-- Articles -->
+    <h5>مقالات {{ profile }}</h5>
+    <section class="profile-section">
+        {% if articles %}
+        {% for article in articles %}
+        <article>
+            <a href="{{ article.get_absolute_url }}">{{ article.title }}</a>
+        </article>
+        {% endfor %}
+        {% else %}
+        <p>این {{ profile }} هنوز مقاله‌ای منتشر نکرده است.</p>
+        {% endif %}
+    </section>
+
+    <!-- Links -->
+    <h5>لینک های {{ profile }}</h5>
+    {% if profile.has_link %}
+    <section class="profile-section">
+        {% if profile.git_account %}
+        <a href="{{ profile.git_account }}">
+            {% if 'github' in profile.git_account %}گیت هاب
+            {% elif 'gitlab' in profile.git_account %}گیت لب
+            {% endif %}
+        </a>
         {% if profile.website %}
         <h5>وب‌سایت</h5>
-        <a href="{{ profile.website }}" class="profile-link" target="_blank">{{ profile.website }}</a>
+        <a href="{{ profile.website }}" class="profile-link">{{ profile.website }}</a>
         {% endif %}
-        {% if profile.github %}
-        <h5>گیت‌هاب</h5>
-        <a href="https://github.com/{{ profile.github }}" class="profile-link" target="_blank">
-            github.com/{{ profile.github }}
-        </a>
         {% endif %}
-    </div>
+    </section>
+    {% else %}
+    <p>لینکی از {{ profile }} در دسترس نیست</p>
+    {% endif %}
 
-
-    {% if profile.tech_stack %}
-    <div class="profile-section profile-tech">
+    <!-- Tech Stack -->
+    <section class="profile-section profile-tech">
         <h5>تکنولوژی‌ها</h5>
+        {% if profile.tech_stack %}
         {% for tech in profile.tech_stack %}
         <span class="badge bg-light text-dark border">{{ tech }}</span>
         {% endfor %}
-    </div>
-    {% endif %}
-    {% endcomment %}
+        {% else %}
+        <p>هنوز تکنولوژی‌ای اضافه نشده است.</p>
+        {% endif %}
+    </section>
 
+    <!-- Actions -->
     {% if profile == user %}
-    <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
-    <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
+    <div class="mt-3">
+        <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
+        <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
+    </div>
     {% endif %}
 
 </div>

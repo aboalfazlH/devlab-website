@@ -6,18 +6,18 @@ from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(SummernoteModelAdmin):
+class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
     """Admin View for CustomUser"""
-
+    form = CustomUserChangeForm
+    add_form = CustomUserCreationForm
     list_display = (
-        "id",
         "username",
         "get_full_name",
         "is_active",
         "is_staff",
         "is_superuser",
     )
-    list_display_links = ("id", "username")
+    list_display_links = ("username",)
     list_editable = ("is_active", "is_staff", "is_superuser")
     list_filter = ("is_active", "is_staff", "is_superuser", "date_joined", "last_login")
     readonly_fields = ("date_joined", "last_login")
@@ -26,9 +26,6 @@ class CustomUserAdmin(SummernoteModelAdmin):
     ordering = (
         "-last_login",
         "-date_joined",
-        "first_name",
-        "last_name",
-        "id",
     )
 
     add_fieldsets = (
@@ -59,7 +56,7 @@ class CustomUserAdmin(SummernoteModelAdmin):
             "personal_info",
             {
                 "classes": ("wide",),
-                "fields": ("first_name", "last_name", "about", "bio", "avatar"),
+                "fields": ("first_name", "last_name", "about", "bio", "avatar","git_account"),
             },
         ),
         (

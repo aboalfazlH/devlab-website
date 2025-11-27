@@ -3,6 +3,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
+import re
+from django.core.exceptions import ValidationError
 
 
 class CustomUser(AbstractUser):
@@ -10,6 +12,12 @@ class CustomUser(AbstractUser):
         """thumbnail upload path"""
         now = timezone.now()
         return f"auth/avatars/{now.year}{now.month}{now.day}/{filename}"
+
+    def validate_git_url(value):
+        """Validate that the URL is from github.com or gitlab.com"""
+        pattern = r"^https?://(www\.)?(github\.com|gitlab\.com)/.+$"
+        if not re.match(pattern, value):
+            raise ValidationError("لینک باید فقط از github.com یا gitlab.com باشد.")
 
     email = models.EmailField(unique=True, verbose_name=_("email"))
     avatar = models.ImageField(
@@ -22,6 +30,17 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(
         verbose_name="شماره تلفن", max_length=15, blank=True, null=True
     )
+    git_account = models.URLField(
+        verbose_name="حساب گیت هاب/گیت لب",
+        validators=[validate_git_url],
+        blank=True,
+        null=True,
+    )
+
+    @property
+    def has_link(self):
+        if self.git_account:
+            return True
 
     def get_absolute_url(self):
         from django.urls import reverse
