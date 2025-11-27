@@ -102,13 +102,16 @@
         <div>
             <h2 class="profile-name">{{ profile.full_name|default:profile.username }}</h2>
             <p class="profile-username">@{{ profile.username }}</p>
-
+            
+            {% comment %}
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
-                <span class="badge bg-primary">Followers: {{ profile.followers|default:"0" }}</span>
-                <span class="badge bg-secondary">Following: {{ profile.following|default:"0" }}</span>
+                <span class="badge bg-primary">دنبال کنندگان: {{ profile.followers|default:"0" }}</span>
+                <span class="badge bg-secondary">دنبال شوندگان: {{ profile.following|default:"0" }}</span>
             </div>
             {% endif %}
+            {% endcomment %}
+                
         </div>
     </div>
 
@@ -126,6 +129,7 @@
     </div>
     {% endif %}
 
+    {% comment %}
     <div class="profile-section">
         {% if profile.website %}
         <h5>وب‌سایت</h5>
@@ -138,7 +142,8 @@
         </a>
         {% endif %}
     </div>
-
+    
+    
     {% if profile.tech_stack %}
     <div class="profile-section profile-tech">
         <h5>تکنولوژی‌ها</h5>
@@ -147,5 +152,12 @@
         {% endfor %}
     </div>
     {% endif %}
+    {% endcomment %}
+    
+    {% if profile == user %}
+        <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
+        <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
+    {% endif %}
+        
 </div>
 {% endblock content %}
