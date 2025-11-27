@@ -35,3 +35,21 @@ class BaseComment(models.Model):
     def __str__(self):
         """Unicode representation of Comment."""
         return f"نظر شماره {self.id}"
+
+class LinkModel(models.Model):
+    name = models.TextField(verbose_name="نام")
+
+class BaseLink(models.Model):
+    """Model definition for BaseLink."""
+    link_type = models.ForeignKey(LinkModel,on_delete=models.CASCADE)
+    link_name = models.CharField(verbose_name="نام لینک",)
+    link_url = models.URLField(verbose_name="مکان لینک")
+    class Meta:
+        """Meta definition for BaseLink."""
+
+        verbose_name = 'BaseLink'
+        verbose_name_plural = 'BaseLinks'
+
+    def __str__(self):
+        """Unicode representation of BaseLink."""
+        return f"{self.link_name}"
