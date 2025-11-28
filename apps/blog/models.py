@@ -10,13 +10,12 @@ import re
 
 class ArticleCategory(BaseCategory):
     """Article Category model"""
-
+    content = models.TextField(verbose_name="توضیحات برچسب",blank=True,null=True)
     slug = models.SlugField(verbose_name="شناسه")
 
     class Meta:
         verbose_name = "برچسب"
         verbose_name_plural = "برچسب ها"
-
 
 class Article(models.Model):
     """Model definition for Article."""

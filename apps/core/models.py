@@ -6,7 +6,7 @@ class BaseCategory(models.Model):
     """Model definition for Category."""
 
     name = models.CharField("نام برچسب")
-    description = models.TextField("توضیح برچسب")
+    description = models.TextField("توضیح برچسب",blank=True,null=True)
     
 
     class Meta:
@@ -14,6 +14,8 @@ class BaseCategory(models.Model):
 
         verbose_name = "برچسب"
         verbose_name_plural = "برچسب ها"
+        abstract = True
+
 
     def __str__(self):
         """Unicode representation of Category."""
@@ -30,6 +32,7 @@ class BaseComment(models.Model):
 
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
+        abstract = True
 
     def __str__(self):
         """Unicode representation of Comment."""
@@ -48,6 +51,7 @@ class BaseLink(models.Model):
 
         verbose_name = 'BaseLink'
         verbose_name_plural = 'BaseLinks'
+        abstract = True
 
     def __str__(self):
         """Unicode representation of BaseLink."""
