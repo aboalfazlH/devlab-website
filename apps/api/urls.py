@@ -1,8 +1,12 @@
 from django.urls import path
-from .views import FrontFakeObjectsApi
+from . import views
 
 
 app_name = "api"
 urlpatterns = [
-    path("front_json_placeholder/<int:count_article>/<int:count_user>",FrontFakeObjectsApi.as_view()),
+    path(
+        "front_json_placeholder/<int:count_article>/<int:count_user>",
+        views.FrontFakeObjectsApi.as_view(),
+    ),
+    path("articles/<int:count_article>/", views.DevelopLabGetArticlesApi.as_view()),
 ]
