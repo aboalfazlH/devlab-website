@@ -10,7 +10,7 @@ import re
 
 class ArticleCategory(BaseCategory):
     """Article Category model"""
-    slug = models.SlugField(verbose_name="شناسه")
+    slug = models.SlugField(verbose_name="شناسه",unique=True)
 
     class Meta:
         verbose_name = "برچسب"
@@ -67,7 +67,7 @@ class Article(models.Model):
     verify_date = models.DateTimeField(
         verbose_name="تاریخ تائید", blank=True, null=True
     )
-    categories = models.ManyToManyField(ArticleCategory)
+    categories = models.ManyToManyField(ArticleCategory,related_name="article")
 
     class Meta:
         """Meta definition for Article."""

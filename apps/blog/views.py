@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views.generic import (
     ListView,
@@ -26,8 +27,14 @@ class ArticleListView(ListView):
     ordering = "-write_date"
 
     def get_queryset(self):
-        """Return only active articles sorted by pinned status and write date."""
         return Article.objects.filter(is_active=True).order_by("-is_pin", "-write_date")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category_counts"] = ArticleCategory.objects.annotate(
+            article_count=Count("article")
+        ).order_by("-article_count")
+        return context
 
 
 # Create a new article (login required)
@@ -72,12 +79,12 @@ class ArticleUpdateView(UpdateView):
         """Check if user is the author before editing."""
         obj = self.get_object()
         if obj.author != request.user:
-            messages.error(request, "You cannot edit this article.")
+            messages.error(request, "شما نمی توانید این را تغییر دهید")
             return redirect(self.success_url)
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        messages.success(self.request, "Your changes have been saved ✅")
+        messages.success(self.request, "تغیرات شما ذخیره شد✅")
         return super().form_valid(form)
 
 
@@ -122,7 +129,7 @@ class ArticleDeleteView(DeleteView):
             article.delete()
         else:
             article.soft_delete()
-        messages.success(request, "Article deleted successfully.")
+        messages.success(request, "حذف مقاله موفق بود")
         return redirect(self.success_url)
 
 
@@ -144,8 +151,26 @@ class CategoryAutocomplete(View):
     def get(self, request, *args, **kwargs):
         """Return JSON response for Select2 AJAX requests."""
         query = request.GET.get("q", "")
-        qs = ArticleCategory.objects.filter(name__icontains=query)[
-            :10
-        ]  # max 10 results
+        qs = ArticleCategory.objects.filter(name__icontains=query)[:10]
         results = [{"id": c.id, "text": c.name} for c in qs]
         return JsonResponse({"results": results})
+
+
+class ArticleFilterWithCategory(ListView):
+    model = Article
+    template_name = "articles.html"
+    context_object_name = "articles"
+    paginate_by = 25
+    ordering = "-write_date"
+
+    def get_queryset(self):
+        slug = self.kwargs.get("category")
+        return Article.objects.filter(categories__slug=slug, is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["category"] = self.kwargs.get("category")
+        context["category_counts"] = ArticleCategory.objects.annotate(
+            article_count=Count("article")
+        ).order_by("-article_count")
+        return context

@@ -1,32 +1,25 @@
 from django.urls import path
-from .views import (
-    ArticleListView,
-    ArticleCreateView,
-    ArticleDetailView,
-    ArticleUpdateView,
-    ArticleDeleteView,
-    ArticlePinView,
-    CategoryAutocomplete,
-)
+from . import views
 
 app_name = "blog"
 
 urlpatterns = [
-    path("article/", ArticleListView.as_view(), name="articles"),
-    path("article/write/", ArticleCreateView.as_view(), name="write-article"),
-    path("article/<slug:slug>/", ArticleDetailView.as_view(), name="article-detail"),
+    path("article/", views.ArticleListView.as_view(), name="articles"),
+    path("article/filter/<slug:category>/", views.ArticleFilterWithCategory.as_view(), name="article-list-category"),
+    path("article/write/", views.ArticleCreateView.as_view(), name="write-article"),
+    path("article/<slug:slug>/", views.ArticleDetailView.as_view(), name="article-detail"),
     path(
-        "article/<slug:slug>/edit/", ArticleUpdateView.as_view(), name="article-update"
+        "article/<slug:slug>/edit/", views.ArticleUpdateView.as_view(), name="article-update"
     ),
     path(
         "article/<slug:slug>/delete/",
-        ArticleDeleteView.as_view(),
+        views.ArticleDeleteView.as_view(),
         name="article-delete",
     ),
-    path("article/<slug:slug>/pin/", ArticlePinView.as_view(), name="article-pin"),
+    path("article/<slug:slug>/pin/", views.ArticlePinView.as_view(), name="article-pin"),
     path(
         "select2/categories/",
-        CategoryAutocomplete.as_view(),
+        views.CategoryAutocomplete.as_view(),
         name="categories-autocomplete",
     ),
 ]
