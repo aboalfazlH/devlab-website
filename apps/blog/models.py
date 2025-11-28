@@ -3,9 +3,8 @@ from django.urls import reverse
 from django.utils import timezone
 from unidecode import unidecode
 import re
-
 from apps.accounts.models import CustomUser
-from apps.core.models import BaseCategory
+from apps.core.models import BaseCategory, BaseComment
 
 
 # ------------------------------
@@ -157,3 +156,27 @@ class Article(models.Model):
     # --------------------------
     def __str__(self):
         return self.title
+
+
+class ArticleComment(BaseComment):
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, verbose_name="مقاله")
+    comment = models.ForeignKey("self", on_delete=models.CASCADE, blank=True, null=True,related_name='replies')
+    write_date = models.DateTimeField(
+        auto_now_add=True,
+    )
+    is_active = models.BooleanField(default=True)
+    is_check = models.BooleanField(
+        default=False,
+    )
+    is_pin = models.BooleanField(default=False)
+
+    @property
+    def is_reply(self):
+        return self.comment is not None
+
+    class Meta:
+        verbose_name = "نظر"
+        verbose_name_plural = "نظرات"
+
+    def __str__(self):
+        return super().__str__()

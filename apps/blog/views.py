@@ -14,7 +14,7 @@ from django.shortcuts import redirect, get_object_or_404
 from django.utils.timezone import now
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Article, ArticleCategory
+from .models import Article, ArticleCategory,ArticleComment
 from .forms import ArticleForm
 
 
@@ -106,6 +106,12 @@ class ArticleDetailView(DetailView):
             self.request.session[session_key] = True
         return obj
 
+    def get_context_data(self, **kwargs):
+        """Add comments and form to context."""
+        context = super().get_context_data(**kwargs)
+        context['comments'] = ArticleComment.objects.filter(article=self.object, comment__isnull=True).order_by('-write_date')
+        return context
+
 
 # Delete an article
 class ArticleDeleteView(DeleteView):
@@ -169,7 +175,7 @@ class ArticleFilterWithCategory(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["category"] = self.kwargs.get("category")
+        context["category"] = ArticleCategory.objects.get(slug=self.kwargs.get("category"))
         context["categories"] = ArticleCategory.objects.annotate(
             article_count=Count("articles",filter=Q(articles__is_active=True))
         ).order_by("-article_count")

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Article, ArticleCategory
+from .models import Article, ArticleCategory,ArticleComment
 from django_summernote.admin import SummernoteModelAdmin
 
 
@@ -89,3 +89,7 @@ class ArticleAdmin(SummernoteModelAdmin):
 class ArticleCategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)
     search_fields = ("name", "description")
+@admin.register(ArticleComment)
+class ArticleCommentAdmin(admin.ModelAdmin):
+    list_display = ("id",)
+    search_fields = ("id",)

@@ -8,24 +8,28 @@
 
 {% block styles %}
 <style>
+    /* تصاویر مقاله */
     .article-img {
         max-height: 350px;
         width: 100%;
         object-fit: cover;
         border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         transition: transform 0.3s;
     }
+
     .article-img:hover {
         transform: scale(1.02);
     }
 
+    /* توضیحات مقاله */
     .article-description {
         line-height: 1.8;
         font-size: 1.05rem;
         color: #333;
     }
 
+    /* دکمه‌ها و اکشن‌ها */
     .article-actions {
         display: flex;
         flex-wrap: wrap;
@@ -33,6 +37,7 @@
         margin-top: 1rem;
     }
 
+    /* نوتیفیکیشن کپی لینک */
     .copy-notification {
         position: fixed;
         bottom: 20px;
@@ -42,15 +47,32 @@
         color: #fff;
         padding: 0.5rem 1rem;
         border-radius: 6px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.3s;
         z-index: 9999;
     }
 
-    .copy-notification.show {
-        opacity: 1;
+    /* نمایش کامنت‌ها */
+    .comments-section {
+        margin-top: 2rem;
+    }
+
+    .comments-section ul {
+        padding-left: 0;
+    }
+
+    .comments-section li {
+        list-style: none;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .comment-replies {
+        padding-left: 1.5rem;
+        margin-top: 0.5rem;
     }
 </style>
 {% endblock %}
@@ -58,10 +80,10 @@
 {% block content %}
 <div class="container my-5" dir="rtl">
 
+    <!-- عنوان مقاله -->
     <h1 class="fw-bold text-center mb-4">{{ article.title }}</h1>
 
     <div class="row align-items-center">
-
         {% if article.thumbnail %}
         <div class="col-md-4 text-center mb-4 mb-md-0">
             <img src="{{ article.thumbnail.url }}" class="article-img" alt="{{ article.title }}">
@@ -70,7 +92,7 @@
 
         <div class="col-md-8">
             <div class="text-muted small mb-2">
-                نویسنده: <strong>{{ article.author }}</strong>
+                نویسنده: <strong><a href="{{ article.author.get_absolute_url }}">{{ article.author }}</a></strong>
                 <span class="mx-2">|</span>
                 {{ article.write_date|timesince }} قبل
                 <p>تعداد بازدید: {{ article.views }}</p>
@@ -78,9 +100,9 @@
 
             <div class="article-description">
                 {% if article.description %}
-                    {{ article.description|safe }}
+                {{ article.description|safe }}
                 {% else %}
-                    <p class="text-danger">برای این مقاله توضیحی ثبت نشده.</p>
+                <p class="text-danger">برای این مقاله توضیحی ثبت نشده.</p>
                 {% endif %}
             </div>
 
@@ -88,7 +110,8 @@
                 <button class="btn btn-outline-success btn-sm" onclick="copyLink()">کپی لینک</button>
 
                 {% if user == article.author or user.is_superuser %}
-                <a class="btn btn-outline-info btn-sm" href="{% url 'blog:article-update' article.slug %}">ویرایش مقاله</a>
+                <a class="btn btn-outline-info btn-sm" href="{% url 'blog:article-update' article.slug %}">ویرایش
+                    مقاله</a>
                 <a class="btn btn-danger btn-sm" href="{% url 'blog:article-delete' article.slug %}">حذف مقاله</a>
                 {% endif %}
 
@@ -102,12 +125,53 @@
                 {% endif %}
             </div>
         </div>
-
     </div>
 
     <hr class="my-4">
 
-    <a href="{% url 'blog:articles' %}" class="btn btn-dark w-100">
+    <!-- بخش کامنت‌ها -->
+    <div class="comments-section">
+        <h4 class="mb-3">نظرات</h4>
+
+        {% if comments %}
+        <ul>
+            {% for comment in comments %}
+            <li>
+                <strong>{{ comment.user }}</strong>
+                <span class="text-muted small">{{ comment.write_date|timesince }} قبل</span>
+                <p>{{ comment.content }}</p>
+
+                {% if comment.replies.exists %}
+                <ul class="comment-replies">
+                    {% for reply in comment.replies.all %}
+                    <li>
+                        <strong>{{ reply.user }}</strong>
+                        <span class="text-muted small">{{ reply.write_date|timesince }} قبل</span>
+                        <p>{{ reply.content }}</p>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+        {% endif %}
+
+        
+        {% comment %}
+        {# TODO #}
+        <form method="post" action="{% url 'blog:add_comment' article.slug %}">
+            {% csrf_token %}
+            {{ comment_form.as_p }}
+            <button type="submit" class="btn btn-primary btn-sm">ثبت نظر</button>
+        </form>
+        {% endcomment %}
+            
+    </div>
+
+    <a href="{% url 'blog:articles' %}" class="btn btn-dark w-100 mt-4">
         بازگشت به لیست مقالات
     </a>
 </div>
