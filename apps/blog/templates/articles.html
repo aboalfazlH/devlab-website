@@ -141,10 +141,10 @@
     <div class="col-lg-3 col-md-4">
       <div class="sidebar-box">
         <h5 class="mb-3">دسته‌بندی‌ها</h5>
-        {% for cat in category_counts %}
-        <a href="{% url 'blog:article-list-category' cat.slug %}" class="d-block mb-2 badge bg-light text-dark"
+        {% for category in categories %}
+        <a href="{% url 'blog:article-list-category' category.slug %}" class="d-block mb-2 badge bg-light text-dark"
           style="font-size:0.9rem;border:1px solid #ccc;">
-          {{ cat.name }} ({{ cat.article_count }})
+          {{ category.name }} ({{ category.article_count }})
         </a>
         {% endfor %}
       </div>
