@@ -24,7 +24,10 @@ DJANGO_APPS = [
     "django.contrib.staticfiles",
 ]
 
-THIRD_PARTY_APPS = ['django_summernote',]
+THIRD_PARTY_APPS = [
+    "django_summernote",
+    "django_select2",
+]
 LOCAL_APPS = [
     "apps.accounts",
     "apps.core",
@@ -92,8 +95,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "accounts.CustomUser"
 
-LOGIN_URL = '/accounts/login/'
-
+LOGIN_URL = "/accounts/login/"
 
 
 LANGUAGE_CODE = "fa-IR"
@@ -115,4 +117,3 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-

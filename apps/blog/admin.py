@@ -1,6 +1,7 @@
 from django.contrib import admin
-from .models import Article
+from .models import Article, ArticleCategory
 from django_summernote.admin import SummernoteModelAdmin
+
 
 @admin.register(Article)
 class ArticleAdmin(SummernoteModelAdmin):
@@ -27,6 +28,7 @@ class ArticleAdmin(SummernoteModelAdmin):
         "delete_date",
         "verify_date",
     )
+    autocomplete_fields = ("author","categories",)
     readonly_fields = (
         "write_date",
         "update_date",
@@ -46,7 +48,14 @@ class ArticleAdmin(SummernoteModelAdmin):
             "اطلاعات اصلی",
             {
                 "classes": ("wide",),
-                "fields": ("title", "short_description", "description", "thumbnail","slug"),
+                "fields": (
+                    "title",
+                    "short_description",
+                    "description",
+                    "thumbnail",
+                    "slug",
+                    "author",
+                ),
             },
         ),
         (
@@ -57,6 +66,7 @@ class ArticleAdmin(SummernoteModelAdmin):
                     "is_active",
                     "is_verify",
                     "is_pin",
+                    "categories",
                 ),
             },
         ),
@@ -73,3 +83,9 @@ class ArticleAdmin(SummernoteModelAdmin):
             },
         ),
     )
+
+
+@admin.register(ArticleCategory)
+class ArticleCategoryAdmin(admin.ModelAdmin):
+    list_display = ("name",)
+    search_fields = ("name", "description")

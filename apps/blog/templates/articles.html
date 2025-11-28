@@ -54,9 +54,9 @@
   .article-title {
     font-size: 1.25rem;
     font-weight: bold;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
   }
 
   .article-desc {
@@ -71,77 +71,85 @@
     font-size: 0.9rem;
     color: #6c757d;
   }
+
+  .sidebar-box {
+    height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 8px;
+  }
 </style>
 {% endblock styles %}
 
 {% block content %}
 <div class="container mt-4">
 
-  <h1>مقالات</h1>
-  <br>
-  <a class="btn btn-primary" href="{% url 'blog:write-article' %}">نوشتن یک مقاله جدید</a>
-  <hr>
-  <br>
-  {% for article in articles %}
-  <div class="article-card {% if article.is_pin or article.most_visited %}pin{% endif %}"
-    onclick="window.location='{{ article.get_absolute_url }}';">
+  <div class="row">
+    <div class="col-lg-9 col-md-8">
 
-    {% if article.thumbnail %}
-    <img src="{{ article.thumbnail.url }}" class="thumbnail" alt="{{ article.title }}">
-    {% else %}
-    <div class="thumbnail-placeholder">بدون تصویر</div>
-    {% endif %}
+      <div class="d-flex justify-content-between align-items-center">
+        <h1>مقالات
+          {% if category %}
+          <span class="badge bg-info text-dark">بر اساس {{ category }}</span>
+          {% endif %}
+        </h1>
+        <a class="btn btn-primary" href="{% url 'blog:write-article' %}">نوشتن مقاله جدید</a>
+      </div>
 
-    <div>
-      <h3 class="article-title">{{ article.title }}</h3>
-      <p class="article-desc">{{ article.short_description }}</p>
-
-      <p class="author-box">
-        نویسنده:
-        {{ article.author }}
-        <span class="text-muted"> |{{ article.write_date|timesince }} قبل</span>
-        <span class="text-muted"> |{{ article.views }} بازدید</span>
-      </p>
-
-      {% if article.is_pin %}
-      <span class="badge bg-warning text-dark">ویژه</span>
+      {% if category %}
+      <a href="{% url 'blog:articles' %}" class="btn btn-outline-secondary btn-sm mt-2">حذف فیلتر</a>
       {% endif %}
 
-      {% if article.most_visited %}
-      <span class="badge bg-danger text-dark">پربازدید</span>
-      {% endif %}
+      <hr>
 
-    </div>
-  </div>
-  {% empty %}
-  <div class="alert alert-warning text-center">هیچ مقاله‌ای یافت نشد.</div>
-  {% endfor %}
+      {% for article in articles %}
+      <div class="article-card {% if article.is_pin or article.most_visited %}pin{% endif %}"
+        onclick="window.location='{{ article.get_absolute_url }}';">
 
-  {% if is_paginated %}
-  <nav aria-label="Page navigation" class="mt-4">
-    <ul class="pagination justify-content-center">
-      {% if page_obj.has_previous %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
-      {% else %}
-      <li class="page-item disabled"><span class="page-link">قبلی</span></li>
-      {% endif %}
+        {% if article.thumbnail %}
+        <img src="{{ article.thumbnail.url }}" class="thumbnail" alt="{{ article.title }}">
+        {% else %}
+        <div class="thumbnail-placeholder">بدون تصویر</div>
+        {% endif %}
 
-      {% for num in page_obj.paginator.page_range %}
-      {% if num == page_obj.number %}
-      <li class="page-item active"><span class="page-link">{{ num }}</span></li>
-      {% else %}
-      <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-      {% endif %}
+        <div>
+          <h3 class="article-title">{{ article.title }}</h3>
+          <p class="article-desc">{{ article.short_description }}</p>
+
+          <p class="author-box">
+            نویسنده: {{ article.author }}
+            <span class="text-muted"> | {{ article.write_date|timesince }} قبل</span>
+            <span class="text-muted"> | {{ article.views }} بازدید</span>
+          </p>
+
+          {% if article.is_pin %}
+          <span class="badge bg-warning text-dark">ویژه</span>
+          {% endif %}
+          {% if article.most_visited %}
+          <span class="badge bg-danger text-dark">پربازدید</span>
+          {% endif %}
+        </div>
+      </div>
+      {% empty %}
+      <div class="alert alert-warning text-center">هیچ مقاله‌ای یافت نشد.</div>
       {% endfor %}
 
-      {% if page_obj.has_next %}
-      <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
-      {% else %}
-      <li class="page-item disabled"><span class="page-link">بعدی</span></li>
-      {% endif %}
-    </ul>
-  </nav>
-  {% endif %}
+      {% include 'components/pagination.html' %}
+    </div>
 
+    <div class="col-lg-3 col-md-4">
+      <div class="sidebar-box">
+        <h5 class="mb-3">دسته‌بندی‌ها</h5>
+        {% for cat in category_counts %}
+        <a href="{% url 'blog:article-list-category' cat.slug %}" class="d-block mb-2 badge bg-light text-dark"
+          style="font-size:0.9rem;border:1px solid #ccc;">
+          {{ cat.name }} ({{ cat.article_count }})
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
 </div>
 {% endblock content %}

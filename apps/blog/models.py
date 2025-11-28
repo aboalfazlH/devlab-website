@@ -1,20 +1,50 @@
-from django.urls import reverse
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
-from apps.accounts.models import CustomUser
-from django.template.defaultfilters import slugify
 from unidecode import unidecode
 import re
 
+from apps.accounts.models import CustomUser
+from apps.core.models import BaseCategory
 
+
+# ------------------------------
+# Article Category Model
+# ------------------------------
+class ArticleCategory(BaseCategory):
+    """Model representing an article category."""
+
+    slug = models.SlugField(
+        verbose_name="شناسه",
+        unique=True,
+        help_text="Unique identifier for the category",
+    )
+
+    class Meta:
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+
+    def __str__(self):
+        return self.name
+
+
+# ------------------------------
+# Article Model
+# ------------------------------
 class Article(models.Model):
-    """Model definition for Article."""
+    """Model representing an article."""
 
+    # --------------------------
+    # File upload path
+    # --------------------------
     def thumbnail_upload_path(instance, filename):
-        """thumbnail upload path"""
+        """Generate upload path for thumbnail images."""
         now = timezone.now()
         return f"blog/thumbnails/{now.year}{now.month}{now.day}/{filename}"
 
+    # --------------------------
+    # Fields
+    # --------------------------
     title = models.CharField(max_length=110, verbose_name="موضوع")
     thumbnail = models.ImageField(
         verbose_name="تصویر بندانگشتی",
@@ -22,33 +52,23 @@ class Article(models.Model):
         blank=True,
         null=True,
     )
-    views = models.PositiveIntegerField(default=0,verbose_name="بازدید")
     short_description = models.CharField(max_length=110, verbose_name="توضیحات کوتاه")
     description = models.TextField(verbose_name="توضیحات", blank=True, null=True)
+    views = models.PositiveIntegerField(default=0, verbose_name="بازدید")
+
     is_active = models.BooleanField(verbose_name="فعال", default=True)
     is_verify = models.BooleanField(verbose_name="تائید شده", default=False)
     is_pin = models.BooleanField(verbose_name="ویژه", default=False)
+
     author = models.ForeignKey(
         CustomUser, verbose_name="نویسنده", on_delete=models.CASCADE
     )
     slug = models.SlugField(
         verbose_name="شناسه",
         unique=True,
+        help_text="Unique slug generated from title if empty",
     )
 
-    @property
-    def status(self):
-        if self.is_active and self.is_verify and self.is_pin:
-            return "فعال✅📌"
-        elif self.is_active and self.is_verify:
-            return "فعال✅"
-        elif self.is_active:
-            return "فعال❌"
-        else:
-            return "غیر فعال"
-    @property
-    def most_visited(self):
-        return self.views >= 1000
     write_date = models.DateTimeField(verbose_name="تاریخ نوشتن", auto_now_add=True)
     update_date = models.DateTimeField(verbose_name="تاریخ تغییر", auto_now=True)
     delete_date = models.DateTimeField(verbose_name="تاریخ حذف", blank=True, null=True)
@@ -56,40 +76,75 @@ class Article(models.Model):
         verbose_name="تاریخ تائید", blank=True, null=True
     )
 
-    class Meta:
-        """Meta definition for Article."""
+    categories = models.ManyToManyField(
+        ArticleCategory, related_name="articles", verbose_name="دسته‌بندی‌ها"
+    )
 
+    # --------------------------
+    # Meta options
+    # --------------------------
+    class Meta:
         verbose_name = "مقاله"
         verbose_name_plural = "مقالات"
+        ordering = ["-write_date"]
 
+    # --------------------------
+    # Properties
+    # --------------------------
+    @property
+    def status(self):
+        """Return a human-readable status of the article."""
+        if self.is_active and self.is_verify and self.is_pin:
+            return "فعال✅📌"
+        elif self.is_active and self.is_verify:
+            return "فعال✅"
+        elif self.is_active:
+            return "فعال❌"
+        return "غیر فعال"
+
+    @property
+    def most_visited(self):
+        """Return True if the article has more than 1000 views."""
+        return self.views >= 1000
+
+    # --------------------------
+    # Custom methods
+    # --------------------------
     def soft_delete(self):
-        self.delete_date = timezone.now()
+        """Soft delete the article by marking it inactive."""
         self.is_active = False
         self.is_verify = False
         self.is_pin = False
+        self.delete_date = timezone.now()
+        self.save()
+
+    def verify(self):
+        """Mark the article as verified."""
+        self.is_verify = True
+        self.verify_date = timezone.now()
         self.save()
 
     def get_absolute_url(self):
+        """Return the absolute URL to the article detail page."""
         return reverse("blog:article-detail", kwargs={"slug": self.slug})
 
-    def verify(self):
-        self.verify_date = timezone.now()
-        self.is_verify = True
-        self.save()
-
+    # --------------------------
+    # Overridden save method
+    # --------------------------
     def save(self, *args, **kwargs):
+        """Auto-generate a unique slug if not provided."""
         if not self.slug or self.slug.strip() == "":
-            text = unidecode(self.title)
-            text = re.sub(r"[^\w\s-]", "", text)
-            text = re.sub(r"[-\s]+", "-", text)
-            base_slug = text.lower().strip("-_")
-
+            # Convert title to ASCII-friendly slug
+            base_slug = unidecode(self.title)
+            base_slug = re.sub(r"[^\w\s-]", "", base_slug)
+            base_slug = re.sub(r"[-\s]+", "-", base_slug).lower().strip("-_")
             if not base_slug:
                 base_slug = "article"
 
             slug = base_slug
             counter = 1
 
+            # Ensure slug uniqueness
             while Article.objects.filter(slug=slug).exclude(pk=self.pk).exists():
                 slug = f"{base_slug}-{counter}"
                 counter += 1
@@ -98,6 +153,8 @@ class Article(models.Model):
 
         super().save(*args, **kwargs)
 
+    # --------------------------
+    # String representation
+    # --------------------------
     def __str__(self):
-        """Unicode representation of Article."""
-        return f"{self.title}"
+        return self.title

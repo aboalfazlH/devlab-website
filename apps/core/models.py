@@ -5,32 +5,34 @@ from apps.accounts.models import CustomUser
 class BaseCategory(models.Model):
     """Model definition for Category."""
 
-    name = models.CharField("نام برچسب")
-    description = models.TextField("توضیح برچسب")
+    name = models.CharField("نام برچسب",max_length=110)
+    description = models.TextField("توضیح برچسب",blank=True,null=True)
     
 
     class Meta:
         """Meta definition for Category."""
 
-        verbose_name = "Category"
-        verbose_name_plural = "Categorys"
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+        abstract = True
+
 
     def __str__(self):
         """Unicode representation of Category."""
-        pass
+        return f"{self.name}"
 
 
 class BaseComment(models.Model):
     """Model definition for Comment."""
-
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="کاربر")
-    content = models.TextField(verbose_name="محتوا")
+    content = models.TextField(blank=True,null=True,verbose_name="محتوا")
 
     class Meta:
         """Meta definition for Comment."""
 
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
+        abstract = True
 
     def __str__(self):
         """Unicode representation of Comment."""
@@ -49,6 +51,7 @@ class BaseLink(models.Model):
 
         verbose_name = 'BaseLink'
         verbose_name_plural = 'BaseLinks'
+        abstract = True
 
     def __str__(self):
         """Unicode representation of BaseLink."""

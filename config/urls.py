@@ -5,6 +5,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
+    path('select2/', include('django_select2.urls')),
     path('admin/', admin.site.urls),
     path('accounts/',include('apps.accounts.urls')),
     path('blog/',include('apps.blog.urls')),
