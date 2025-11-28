@@ -66,7 +66,6 @@ class Article(models.Model):
     slug = models.SlugField(
         verbose_name="شناسه",
         unique=True,
-        help_text="Unique slug generated from title if empty",
     )
 
     write_date = models.DateTimeField(verbose_name="تاریخ نوشتن", auto_now_add=True)

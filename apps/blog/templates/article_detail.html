@@ -10,13 +10,47 @@
 <style>
     .article-img {
         max-height: 350px;
+        width: 100%;
         object-fit: cover;
         border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+    .article-img:hover {
+        transform: scale(1.02);
     }
 
     .article-description {
-        line-height: 1.9;
+        line-height: 1.8;
         font-size: 1.05rem;
+        color: #333;
+    }
+
+    .article-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .copy-notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #28a745;
+        color: #fff;
+        padding: 0.5rem 1rem;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+        z-index: 9999;
+    }
+
+    .copy-notification.show {
+        opacity: 1;
     }
 </style>
 {% endblock %}
@@ -30,7 +64,7 @@
 
         {% if article.thumbnail %}
         <div class="col-md-4 text-center mb-4 mb-md-0">
-            <img src="{{ article.thumbnail.url }}" class="img-fluid article-img shadow-sm" alt="{{ article.title }}">
+            <img src="{{ article.thumbnail.url }}" class="article-img" alt="{{ article.title }}">
         </div>
         {% endif %}
 
@@ -44,31 +78,26 @@
 
             <div class="article-description">
                 {% if article.description %}
-                {{ article.description|safe }}
+                    {{ article.description|safe }}
                 {% else %}
-                <p class="text-danger">برای این مقاله توضیحی ثبت نشده.</p>
+                    <p class="text-danger">برای این مقاله توضیحی ثبت نشده.</p>
                 {% endif %}
             </div>
 
-            <div class="mt-4">
+            <div class="article-actions">
                 <button class="btn btn-outline-success btn-sm" onclick="copyLink()">کپی لینک</button>
 
                 {% if user == article.author or user.is_superuser %}
-                <a class="btn btn-outline-info btn-sm" href="{% url 'blog:article-update' article.slug %}">تغییر
-                    مقاله</a>
+                <a class="btn btn-outline-info btn-sm" href="{% url 'blog:article-update' article.slug %}">ویرایش مقاله</a>
                 <a class="btn btn-danger btn-sm" href="{% url 'blog:article-delete' article.slug %}">حذف مقاله</a>
                 {% endif %}
 
                 {% if user.is_superuser %}
-                <form action="{% url 'blog:article-pin' article.slug %}" method="post">
+                <form action="{% url 'blog:article-pin' article.slug %}" method="post" style="display:inline;">
                     {% csrf_token %}
-                    {% if article.is_pin %}
-                    <button class="btn btn-primary btn-sm" type="submit">برداشتن سنجاق
-                        مقاله</button>
-                    {% else %}
-                    <button class="btn btn-primary btn-sm" type="submit">سنجاق کردن
-                        مقاله</button>
-                    {% endif %}
+                    <button class="btn btn-primary btn-sm" type="submit">
+                        {% if article.is_pin %}برداشتن سنجاق{% else %}سنجاق کردن{% endif %}
+                    </button>
                 </form>
                 {% endif %}
             </div>
@@ -82,6 +111,8 @@
         بازگشت به لیست مقالات
     </a>
 </div>
+
+<div class="copy-notification" id="copyNotification">لینک کپی شد!</div>
 {% endblock %}
 
 {% block scripts %}
@@ -91,11 +122,8 @@
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(textToCopy)
-                .then(() => alert('لینک کپی شد!'))
-                .catch(err => {
-                    console.error('خطا در کپی: ', err);
-                    fallbackCopy(textToCopy);
-                });
+                .then(() => showNotification())
+                .catch(() => fallbackCopy(textToCopy));
         } else {
             fallbackCopy(textToCopy);
         }
@@ -108,11 +136,17 @@
         textarea.select();
         try {
             document.execCommand("copy");
-            alert('لینک کپی شد!');
+            showNotification();
         } catch (err) {
             console.error('کپی نشد: ', err);
         }
         document.body.removeChild(textarea);
+    }
+
+    function showNotification() {
+        const notif = document.getElementById('copyNotification');
+        notif.classList.add('show');
+        setTimeout(() => notif.classList.remove('show'), 1500);
     }
 </script>
 {% endblock %}

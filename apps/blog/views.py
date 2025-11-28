@@ -1,4 +1,4 @@
-from django.db.models import Count
+from django.db.models import Count,Q
 from django.http import JsonResponse, HttpResponseForbidden
 from django.views.generic import (
     ListView,
@@ -31,8 +31,8 @@ class ArticleListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["category_counts"] = ArticleCategory.objects.annotate(
-            article_count=Count("article")
+        context["categories"] = ArticleCategory.objects.annotate(
+            article_count=Count("articles",filter=Q(articles__is_active=True))
         ).order_by("-article_count")
         return context
 
@@ -170,7 +170,7 @@ class ArticleFilterWithCategory(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["category"] = self.kwargs.get("category")
-        context["category_counts"] = ArticleCategory.objects.annotate(
-            article_count=Count("article")
+        context["categories"] = ArticleCategory.objects.annotate(
+            article_count=Count("articles",filter=Q(articles__is_active=True))
         ).order_by("-article_count")
         return context
