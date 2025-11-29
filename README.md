@@ -1,6 +1,5 @@
 # developlab-website | وبسایت آزمایشگاه توسعه
 
-## english version
 ## English Version
 A website with features for developers, including Q&A, blog, Git repository, collaboration between developers, and more.
 
