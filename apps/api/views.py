@@ -48,7 +48,7 @@ class DevelopLabGetArticlesApi(View):
             "articles": [],
             "description": f"get last {count_article} article succesfuly",
         }
-        articles = Article.objects.filter(is_active=True)[: count_article + 1]
+        articles = Article.objects.filter(is_active=True,author__public_article=True).order_by("-write_date")[: count_article + 1]
         for _ in articles:
             data["articles"].append(
                 {
@@ -63,5 +63,7 @@ class DevelopLabGetArticlesApi(View):
                     "categories": list(_.categories.values("id", "name")),
                 }
             )
-
+        if data["articles"] == []:
+            data["status"] = 404
+            data["description"] = "query is null"
         return JsonResponse(data, safe=False)
