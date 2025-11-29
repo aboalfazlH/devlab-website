@@ -190,5 +190,6 @@ class CommentDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         from apps.blog.models import Article
+        context["comment"] = ArticleComment.objects.get(id=self.kwargs["pk"],is_reply=False)
         context["article"] = Article.objects.get(slug=self.kwargs["slug"])
         return context
