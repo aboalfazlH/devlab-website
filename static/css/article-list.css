@@ -1,0 +1,71 @@
+.article-card {
+  border: 1px solid #dee2e6;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+  transition: 0.3s;
+  cursor: pointer;
+}
+
+.article-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.pin {
+  border: 2px solid #ffc107 !important;
+  background: #fffbea !important;
+}
+
+.thumbnail {
+  width: 130px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.thumbnail-placeholder {
+  width: 130px;
+  height: 90px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  background-color: #f0f0f0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #777;
+  font-size: 0.8rem;
+}
+
+.article-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.article-desc {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  margin-bottom: 8px;
+}
+
+.author-box {
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+.sidebar-box {
+  height: 400px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 8px;
+}
