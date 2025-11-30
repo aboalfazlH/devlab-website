@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
 import re
 from django.core.exceptions import ValidationError
-
+from apps.core.models import BaseLink
 
 class CustomUser(AbstractUser):
     def avatar_upload_path(instance, filename):
@@ -34,7 +34,7 @@ class CustomUser(AbstractUser):
             r"^https?:\/\/(www\.)?linkedin\.com\/(in|company)\/[A-Za-z0-9_.-]+\/?$"
         )
         if not re.match(pattern, value):
-            raise ValidationError("فقط لینک معتبر LinkedIn وارد کنید.")
+            raise ValidationError("فقط لینک معتبر لینکدین وارد کنید.")
 
     def validate_telegram_link(value):
         pattern = r"^https?:\/\/(t\.me)\/[A-Za-z0-9_]{5,32}$"
@@ -60,7 +60,7 @@ class CustomUser(AbstractUser):
         blank=True,
         null=True,
     )
-    website = models.URLField(verbose_name="سایت کاربر", blank=True, null=True)
+    website = models.URLField(verbose_name="سایت", blank=True, null=True)
     facebook = models.URLField(
         verbose_name="فیس بوک",
         blank=True,
@@ -92,6 +92,8 @@ class CustomUser(AbstractUser):
         default=False,
     )
 
+    public_email = models.EmailField(verbose_name="ایمیل عمومی",blank=True,null=True)
+    public_phone_number = models.EmailField(verbose_name="شماره تلفن عمومی",blank=True,null=True)
     @property
     def has_link(self):
         links = [
@@ -113,3 +115,10 @@ class CustomUser(AbstractUser):
         return (
             f"{self.username}" if self.get_full_name() is None else self.get_full_name()
         )
+
+class ProfileLink(BaseLink):
+    """link for profile"""
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.link_type} {self.user}"

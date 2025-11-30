@@ -1,77 +1,84 @@
-    body {
-        background-color: #f6f8fa;
-        color: #24292f;
-    }
+body {
+  background-color: #f6f8fa;
+  color: #24292f;
+}
 
-    .profile-container {
-        max-width: 900px;
-        margin: 50px auto;
-        background-color: #fff;
-        border-radius: 12px;
-        border: 1px solid #e1e4e8;
-        padding: 30px;
-    }
+.profile-container {
+  max-width: 900px;
+  margin: 50px auto;
+  background-color: #fff;
+  border-radius: 12px;
+  border: 1px solid #e1e4e8;
+  padding: 30px;
+}
 
-    .profile-avatar {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 1px solid #e1e4e8;
-        object-fit: cover;
-    }
+.profile-avatar {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid #e1e4e8;
+  object-fit: cover;
+}
 
-    .profile-header {
-        display: flex;
-        align-items: center;
-        gap: 20px;
-        flex-wrap: wrap;
-        margin-bottom: 20px;
-    }
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
 
-    .profile-name {
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin: 0;
-    }
+.profile-name {
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
 
-    .profile-username {
-        color: #57606a;
-        font-size: 1rem;
-    }
+.profile-username {
+  color: #57606a;
+  font-size: 1rem;
+}
+.profile-email {
+  color: #57606a;
+  font-size: 1rem;
+}
+.profile-phone-number {
+  color: #57606a;
+  font-size: 1rem;
+}
+.profile-badges span {
+  margin-right: 10px;
+}
 
-    .profile-badges span {
-        margin-right: 10px;
-    }
+.profile-section {
+  margin-top: 25px;
+}
 
-    .profile-section {
-        margin-top: 25px;
-    }
+.profile-section h5 {
+  font-weight: 600;
+  margin-bottom: 10px;
+}
 
-    .profile-section h5 {
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
+.profile-section p,
+.profile-section a {
+  margin-bottom: 8px;
+}
 
-    .profile-section p,
-    .profile-section a {
-        margin-bottom: 8px;
-    }
+.profile-tech span {
+  margin: 3px 3px 3px 0;
+}
 
-    .profile-tech span {
-        margin: 3px 3px 3px 0;
-    }
+.profile-link {
+  display: inline-block;
+  padding: 4px 8px;
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #0366d6;
+  font-size: 0.875rem;
+}
 
-    .profile-link {
-        display: inline-block;
-        padding: 4px 8px;
-        border: 1px solid #e1e4e8;
-        border-radius: 6px;
-        text-decoration: none;
-        color: #0366d6;
-        font-size: 0.875rem;
-    }
-
-    .profile-link:hover {
-        background-color: #f6f8fa;
-        border-color: #0366d6;
-    }
+.profile-link:hover {
+  background-color: #f6f8fa;
+  border-color: #0366d6;
+}

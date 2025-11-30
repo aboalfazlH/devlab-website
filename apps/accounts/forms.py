@@ -60,5 +60,13 @@ class ProfileEditForm(forms.ModelForm):
             "about",
             "bio",
             "email",
+            "public_email",
+            "public_phone_number",
             "phone_number",
+            "git_account",
+            "website",
+            "facebook",
+            "linkedin",
+            "telegram",
+            "public_article",
         )

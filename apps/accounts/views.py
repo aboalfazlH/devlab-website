@@ -3,7 +3,7 @@ from django.views.generic import CreateView, FormView, DetailView, UpdateView
 from django.urls import reverse_lazy
 from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
-from .models import CustomUser
+from .models import CustomUser, ProfileLink
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.blog.models import Article
@@ -53,7 +53,7 @@ class CustomLogoutView(LoginRequiredMixin, FormView):
         return redirect(self.success_url)
 
 
-class CustomUserDetailView(DetailView):
+class ProfileDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
     template_name = "accounts/profile.html"
     context_object_name = "profile"
@@ -62,36 +62,21 @@ class CustomUserDetailView(DetailView):
 
     def get_object(self, queryset=None):
         username = self.kwargs.get(self.slug_url_kwarg)
-        return get_object_or_404(CustomUser, username__iexact=username)
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        user = context["profile"]
-        context = super().get_context_data(**kwargs)
-        context["articles"] = Article.objects.filter(
-            author=user, is_active=True
-        ).order_by("-write_date", "views")[:10]
+        if username:
+            return get_object_or_404(CustomUser, username__iexact=username)
 
-        return context
-
-
-class UserDetailView(LoginRequiredMixin, DetailView):
-    model = CustomUser
-    template_name = "accounts/profile.html"
-    context_object_name = "profile"
-    slug_field = "username"
-    slug_url_kwarg = "username"
-
-    def get_object(self, queryset=None):
         return self.request.user
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = context["profile"]
-        context = super().get_context_data(**kwargs)
+
         context["articles"] = Article.objects.filter(
             author=user, is_active=True
         ).order_by("-write_date", "-views")[:10]
+
+        context["links"] = ProfileLink.objects.filter(user=user)
 
         return context
 
