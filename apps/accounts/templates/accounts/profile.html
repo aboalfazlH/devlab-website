@@ -85,7 +85,7 @@
 
         {% if profile.git_account %}
         <h6>گیت‌هاب / گیت‌لب</h6>
-        <a href="{{ profile.git_account }}" class="profile-link" target="_blank">
+        <a href="{{ profile.git_account }}" class="profile-link">
             {% if 'github' in profile.git_account %}
             GitHub
             {% elif 'gitlab' in profile.git_account %}
@@ -120,6 +120,11 @@
         <h6>تلگرام</h6>
         <a href="{{ profile.telegram }}" class="profile-link" target="_blank">{{ profile.telegram }}</a>
         {% endif %}
+
+        {% for link in links %}
+        <h6>{{ link.link_name }}</h6>
+        <a href="{{ link.link_url }}" class="profile-link" target="_blank">{{ link.link_url }}</a>
+        {% endfor %}
 
     </section>
     {% else %}

@@ -3,8 +3,7 @@ from .views import (
     SignUpView,
     LoginView,
     CustomLogoutView,
-    CustomUserDetailView,
-    UserDetailView,
+    ProfileDetailView,
     CustomUserUpdateView,
 )
 from django.contrib.auth import views as auth_views
@@ -33,6 +32,6 @@ urlpatterns = [
         ),
         name="password_change_done",
     ),
-    path("<str:username>/", CustomUserDetailView.as_view(), name="users-profile"),
-    path("", UserDetailView.as_view(), name="user-profile"),
+    path("<str:username>/", ProfileDetailView.as_view(), name="users-profile"),
+    path("", ProfileDetailView.as_view(), name="user-profile"),
 ]

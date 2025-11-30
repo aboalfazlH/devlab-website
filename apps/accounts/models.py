@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 from django.template.defaultfilters import slugify
 import re
 from django.core.exceptions import ValidationError
-
+from apps.core.models import BaseLink
 
 class CustomUser(AbstractUser):
     def avatar_upload_path(instance, filename):
@@ -115,3 +115,10 @@ class CustomUser(AbstractUser):
         return (
             f"{self.username}" if self.get_full_name() is None else self.get_full_name()
         )
+
+class ProfileLink(BaseLink):
+    """link for profile"""
+    user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.link_type} {self.user}"

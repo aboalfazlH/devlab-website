@@ -1,10 +1,8 @@
 from django.db import models
-from apps.accounts.models import CustomUser
 
 
 class BaseCategory(models.Model):
     """Model definition for Category."""
-
     name = models.CharField("نام برچسب",max_length=110)
     description = models.TextField("توضیح برچسب",blank=True,null=True)
     
@@ -23,8 +21,7 @@ class BaseCategory(models.Model):
 
 
 class BaseComment(models.Model):
-    """Model definition for Comment."""
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, verbose_name="کاربر")
+    user = models.ForeignKey("accounts.CustomUser", on_delete=models.CASCADE, verbose_name="کاربر")
     content = models.TextField(blank=True,null=True,verbose_name="محتوا")
 
     class Meta:
@@ -39,8 +36,9 @@ class BaseComment(models.Model):
         return f"نظر شماره {self.id}"
 
 class LinkModel(models.Model):
-    name = models.TextField(verbose_name="نام")
-
+    name = models.CharField(verbose_name="نام",max_length=110)
+    def __str__(self):
+        return self.name
 class BaseLink(models.Model):
     """Model definition for BaseLink."""
     link_type = models.ForeignKey(LinkModel,on_delete=models.CASCADE)
