@@ -13,12 +13,12 @@ class SignUpView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
     success_url = reverse_lazy("admin:index")
-    template_name = "sign-up.html"
+    template_name = "accounts/auth/sign-up.html"
 
 
 class LoginView(FormView):
     form_class = LoginForm
-    template_name = "login.html"
+    template_name = "accounts/auth/login.html"
     success_url = reverse_lazy("core:home-page")
 
     def form_valid(self, form):
@@ -45,7 +45,7 @@ class CustomLogoutView(LoginRequiredMixin, FormView):
     success_url = reverse_lazy("core:home-page")
 
     def get(self, request, *args, **kwargs):
-        return render(request, "logout-confirm.html")
+        return render(request, "accounts/auth/logout-confirm.html")
 
     def post(self, request, *args, **kwargs):
         logout(request)
@@ -55,7 +55,7 @@ class CustomLogoutView(LoginRequiredMixin, FormView):
 
 class CustomUserDetailView(DetailView):
     model = CustomUser
-    template_name = "profile.html"
+    template_name = "accounts/profile.html"
     context_object_name = "profile"
     slug_field = "username"
     slug_url_kwarg = "username"
@@ -77,7 +77,7 @@ class CustomUserDetailView(DetailView):
 
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = CustomUser
-    template_name = "profile.html"
+    template_name = "accounts/profile.html"
     context_object_name = "profile"
     slug_field = "username"
     slug_url_kwarg = "username"
@@ -98,7 +98,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 
 class CustomUserUpdateView(UpdateView):
     model = CustomUser
-    template_name = "user_update_profile.html"
+    template_name = "accounts/user_update_profile.html"
     form_class = ProfileEditForm
     success_url = reverse_lazy("user-profile")
 
