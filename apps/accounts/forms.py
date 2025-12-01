@@ -39,20 +39,14 @@ class CustomUserChangeForm(UserChangeForm):
         fields = "__all__"
 
 
-class LoginForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "رمز"}))
-
-    class Meta:
-        model = CustomUser
-        fields = ["username"]
-        widgets = {
-            "username": forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"})
-        }
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        for field in self.fields.values():
-            field.help_text = None
-            field.label = ""
+class LoginForm(forms.Form):
+    username = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"}),
+    )
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "رمز عبور"})
+    )
 
     def clean(self):
         cleaned_data = super().clean()
@@ -62,7 +56,10 @@ class LoginForm(forms.ModelForm):
         if username and password:
             user = authenticate(username=username, password=password)
             if not user:
-                raise forms.ValidationError("نام کاربری یا رمز عبور اشتباه است")
+                raise forms.ValidationError("نام کاربری یا رمز عبور اشتباه است.")
+        else:
+            raise forms.ValidationError("تمامی فیلدها باید پر شوند.")
+
         return cleaned_data
 
 

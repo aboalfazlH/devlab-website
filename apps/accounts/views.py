@@ -7,7 +7,8 @@ from .models import CustomUser, ProfileLink
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from apps.blog.models import Article
-
+from django.db.models import Q
+from django.shortcuts import get_object_or_404
 
 class SignUpView(CreateView):
     model = CustomUser
@@ -28,13 +29,14 @@ class LoginView(FormView):
     def form_valid(self, form):
         username = form.cleaned_data.get("username")
         password = form.cleaned_data.get("password")
-        user = authenticate(self.request, username=username, password=password)
-
+        user_username = get_object_or_404(CustomUser, Q(username=username) | Q(email=username)).username
+        user = authenticate(self.request, username=user_username, password=password)
+                
         if user is not None:
             login(self.request, user)
             messages.success(self.request, f"خوش آمدید {self.request.user}")
             return super().form_valid(form)
-
+        
         form.add_error(None, "نام کاربری یا رمز عبور اشتباه است.")
         return self.form_invalid(form)
 
