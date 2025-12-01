@@ -10,6 +10,7 @@
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">ورود</button>
+        <a href="{% url 'social:begin' 'github' %}">میتونی از گیتهابم استفاده کنی</a>
     </form>
 </body>
 </html>
