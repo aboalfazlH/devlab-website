@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-
+from apps.accounts.models import CustomUser
 
 class Question(models.Model):
     """Model definition for Question."""
@@ -8,7 +8,7 @@ class Question(models.Model):
     def question_upload_path(instance, filename):
         now = timezone.now()
         return f"qa/questions/thumbnails/{now.year}{now.month}{now.day}/{filename}"
-
+    
     name = models.CharField(verbose_name="نام", max_length=110)
     help_image = models.ImageField(
         verbose_name="تصویر کمکی", blank=True, null=True, upload_to=question_upload_path
@@ -20,8 +20,9 @@ class Question(models.Model):
     solved = models.BooleanField(verbose_name="حل شده", default=False)
     is_pin = models.BooleanField(verbose_name="ویژه", default=False)
     write_date = models.DateTimeField(verbose_name="تاریخ مطرح شدن", auto_now_add=True)
-    solve_date = models.DateTimeField(verbose_name="تاریخ حل شدن")
+    solve_date = models.DateTimeField(verbose_name="تاریخ حل شدن",blank=True,null=True)
 
+    author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
     def solve(self):
         self.solve_date = timezone.now()
         self.solved = True

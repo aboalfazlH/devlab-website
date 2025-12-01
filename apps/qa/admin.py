@@ -33,6 +33,7 @@ class QuestionAdmin(admin.ModelAdmin):
                 "fields": (
                     "name",
                     "question_description",
+                    "author",
                 ),
             },
         ),

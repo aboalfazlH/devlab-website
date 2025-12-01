@@ -1,0 +1,72 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}لیست سوال‌ها{% endblock %}
+
+{% block styles %}
+<style>
+.card {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.1s;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+.vote-box {
+    text-align: center;
+    width: 60px;
+    margin-right: 15px;
+}
+.vote-btn {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #666;
+}
+.vote-btn:hover {
+    color: #000;
+}
+.tag-badge {
+    margin-right: 5px;
+}
+</style>
+{% endblock styles %}
+
+{% block content %}
+<div class="container my-5">
+    <h3 class="mb-4">سوال‌ها</h3>
+    <div class="row">
+        {% for question in questions %}
+        <div class="col-md-12 mb-3">
+            <div class="card p-3 d-flex flex-row align-items-start">
+                <!-- Vote -->
+                <div class="vote-box">
+                    <div class="vote-btn">▲</div>
+                    <div>{{ question.upvotes|default:0 }}</div>
+                    <div class="vote-btn">▼</div>
+                </div>
+
+                <!-- Question Info -->
+                <div class="flex-grow-1">
+                    <h5><a href="{{ question.get_absolute_url }}">{{ question.name }}</a></h5>
+                    <p class="text-muted mb-1">پرسش توسط <strong>{{ question.author }}</strong> در {{ question.write_date|date:"M d, Y" }}</p>
+                    <div class="mb-1">
+                        {% for tag in question.tags.all %}
+                            <span class="badge bg-primary tag-badge">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        {% if question.is_active %}<span class="badge bg-success">فعال</span>{% else %}<span class="badge bg-secondary">غیرفعال</span>{% endif %}
+                        {% if question.solved %}<span class="badge bg-success">حل شده</span>{% else %}<span class="badge bg-warning text-dark">حل نشده</span>{% endif %}
+                        {% if question.is_pin %}<span class="badge bg-info text-dark">ویژه</span>{% endif %}
+                        <span class="badge bg-light text-dark">{{ question.answers.count }} پاسخ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p>هیچ سوالی ثبت نشده است.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
