@@ -120,5 +120,9 @@ class ProfileLink(BaseLink):
     """link for profile"""
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name = "لینک"
+        verbose_name_plural = "لینک ها"
+
     def __str__(self):
         return f"{self.link_type} {self.user}"

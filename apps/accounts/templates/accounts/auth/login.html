@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="fa">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ورود</title>
-</head>
-<body>
-    <form action="" method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">ورود</button>
-        <a href="{% url 'social:begin' 'github' %}">میتونی از گیتهابم استفاده کنی</a>
-    </form>
-</body>
-</html>
+{% extends 'base/base.html' %}
+{% block title %}
+ورود
+{% endblock title %}
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p>ورود با <a href="{% url 'social:begin' 'github' %}">گیت هاب</a></p>
+    <button class="btn btn-success" type="submit">ورود</button>
+</form>
+{% endblock content %}

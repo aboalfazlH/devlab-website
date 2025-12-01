@@ -12,9 +12,13 @@ from apps.blog.models import Article
 class SignUpView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
-    success_url = reverse_lazy("admin:index")
+    success_url = reverse_lazy("core:home-page")
     template_name = "accounts/auth/sign-up.html"
 
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
 
 class LoginView(FormView):
     form_class = LoginForm

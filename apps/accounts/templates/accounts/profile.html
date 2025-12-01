@@ -32,7 +32,7 @@
             {% if profile.public_phone_number %}
             <p class="profile-phone-number">{{ profile.public_phone_number }}</p>
             {% endif %}
-
+            <!-- TODO: Followers -->
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
                 <span class="badge bg-primary">دنبال کنندگان: {{ profile.followers|default:"0" }}</span>
@@ -50,7 +50,7 @@
     </section>
     {% else %}
     <section class="profile-section">
-        <p>{{ profile }} مرموز است و چیزی درباره خود ننوشته</p>
+        <p>{{ profile }} چیزی درباره خود ننوشته</p>
     </section>
     {% endif %}
 
@@ -87,11 +87,11 @@
         <h6>گیت‌هاب / گیت‌لب</h6>
         <a href="{{ profile.git_account }}" class="profile-link">
             {% if 'github' in profile.git_account %}
-            GitHub
+            گیت‌هاب
             {% elif 'gitlab' in profile.git_account %}
-            GitLab
+            گیت لب
             {% else %}
-            Git Account
+            حساب گیت
             {% endif %}
         </a>
         {% endif %}
@@ -131,7 +131,7 @@
     <p>لینکی از {{ profile }} در دسترس نیست</p>
     {% endif %}
 
-    <!-- Tech Stack -->
+    <!-- TODO : Tech Stack -->
     <section class="profile-section profile-tech">
         <h5>تکنولوژی‌ها</h5>
         {% if profile.tech_stack %}
@@ -144,7 +144,7 @@
     </section>
 
     <!-- Actions -->
-    {% if profile == user %}
+    {% if profile == user or user.is_superuser %}
     <div class="mt-3">
         <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
         <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>

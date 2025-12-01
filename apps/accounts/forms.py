@@ -48,6 +48,11 @@ class LoginForm(forms.ModelForm):
         widgets = {
             "username": forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"})
         }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.help_text = None
+            field.label = ""
 
     def clean(self):
         cleaned_data = super().clean()
