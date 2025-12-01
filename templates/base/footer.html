@@ -1,17 +1,14 @@
 {% load static %}
-<footer class="py-5 bg-dark text-light">
+<footer class="py-5 bg-dark text-light position-relative">
     <div class="container">
         <div class="row">
 
             <div class="col-6 col-md-2 mb-3">
-                <h5>کاربردی برای توسعه</h5>
+                <h6>کاربردی برای توسعه</h6>
                 <ul class="nav flex-column">
-                    <li class="nav-item mb-2"><a href="{% url 'core:home-page' %}"
-                            class="nav-link p-0 text-secondary">خانه</a></li>
                     <li class="nav-item mb-2"><a href="{% url 'blog:articles' %}"
                             class="nav-link p-0 text-secondary">بلاگ</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">توسعه پروژه</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">تمرین ها</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">پرسش و پاسخ</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">کاربران</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">ای پی آی</a></li>
@@ -19,20 +16,20 @@
             </div>
 
             <div class="col-6 col-md-2 mb-3">
-                <h5>لینک های کمکی</h5>
+                <h6>لینک های کمکی</h6>
                 <ul class="nav flex-column">
-                    <li class="nav-item mb-2"><a href="{% url 'core:about-us-page' %}" class="nav-link p-0 text-secondary">درباره ما</a></li>
-                    <li class="nav-item mb-2"><a href="{% url 'core:contact-us-page' %}" class="nav-link p-0 text-secondary">تماس با ما</a></li>
+                    <li class="nav-item mb-2"><a href="{% url 'core:about-us-page' %}"
+                            class="nav-link p-0 text-secondary">درباره ما</a></li>
+                    <li class="nav-item mb-2"><a href="{% url 'core:contact-us-page' %}"
+                            class="nav-link p-0 text-secondary">تماس با ما</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">پشتیبانی</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">سوال های متداول</a></li>
                     <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">خدمات</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">حریم خصوصی</a></li>
-                    <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-secondary">قوانین و مقررات</a></li>
                 </ul>
             </div>
 
             <div class="col-6 col-md-2 mb-3">
-                <h5>با ما در ارتباط باشید!</h5>
+                <h6>با ما در ارتباط باشید!</h6>
                 <ul class="nav flex-column">
                     <li class="nav-item mb-2"><a href="https://github.com/aboalfazlH"
                             class="nav-link p-0 text-secondary">گیتهاب</a></li>
@@ -40,14 +37,10 @@
                             class="nav-link p-0 text-secondary">کانال ایتا</a></li>
                     <li class="nav-item mb-2"><a href="https://ble.ir/developlab"
                             class="nav-link p-0 text-secondary">کانال بله</a></li>
-                    <li class="nav-item mb-2"><a href="https://ble.ir/helpdeveloplab"
-                            class="nav-link p-0 text-secondary">کانال یدکی بله</a></li>
                     <li class="nav-item mb-2"><a href="https://rubika.ir/developlab"
                             class="nav-link p-0 text-secondary">روبیکا</a></li>
                     <li class="nav-item mb-2"><a href="https://ble.ir/developlabbot"
                             class="nav-link p-0 text-secondary">ربات بله</a></li>
-                    <li class="nav-item mb-2"><a href="https://ble.ir/developlabsupportbot"
-                            class="nav-link p-0 text-secondary">ربات پشتیبانی بله</a></li>
                 </ul>
             </div>
 
@@ -69,15 +62,34 @@
         </div>
 
         <div class="d-flex flex-column flex-sm-row justify-content-between py-4 my-4 border-top border-secondary">
-            <p class="m-0">&copy; {% now "Y" %} تمام <a href="#">حقوق</a> محفوظ است. </p>
-            <ul class="list-unstyled d-flex">
-                <li class="ms-3"><a class="link-body-emphasis text-light" href="https://eitaa.com/developlab"
-                        aria-label="Eitaa"><img height="50" width="50" src="{% static 'images/eitaa.png' %}"
-                            alt="Eitaa channel"></a></li>
-                <li class="ms-3"><a class="link-body-emphasis text-light" href="https://ble.ir/developlab"
-                        style="position: relative;top: 4.5px;" aria-label="Bale"><img height="40" width="40"
-                            src="{% static 'images/bale.png' %}" alt="Bale Channel"></a></li>
+            <p class="m-0">&copy; {% now "Y" %} تمام <a href="#">حقوق</a> محفوظ است.</p>
+            <ul class="list-unstyled d-flex m-0">
+                <li class="ms-3">
+                    <a class="link-body-emphasis text-light" href="https://eitaa.com/developlab" aria-label="Eitaa">
+                        <img height="50" width="50" src="{% static 'images/eitaa.png' %}" alt="Eitaa channel">
+                    </a>
+                </li>
+
+                <li class="ms-3">
+                    <a class="link-body-emphasis text-light" href="https://ble.ir/developlab"
+                        style="position: relative; top: 4.5px;" aria-label="Bale">
+                        <img height="40" width="40" src="{% static 'images/bale.png' %}" alt="Bale Channel">
+                    </a>
+                </li>
             </ul>
         </div>
     </div>
+
+    <a href="#" id="scrollToTop" class="btn btn-primary btn-lg position-absolute"
+        style="right: 20px; bottom: 20px; border-radius: 50%;" aria-label="Scroll to Top">
+        &#8593;
+    </a>
 </footer>
+
+<script>
+    const scrollBtn = document.getElementById('scrollToTop');
+    scrollBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
