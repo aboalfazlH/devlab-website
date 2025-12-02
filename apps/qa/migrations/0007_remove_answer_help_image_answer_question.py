@@ -7,18 +7,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('qa', '0006_question_slug'),
+        ("qa", "0006_question_slug"),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='answer',
-            name='help_image',
-        ),
         migrations.AddField(
-            model_name='answer',
-            name='question',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='qa.question'),
+            model_name="answer",
+            name="question",
+            field=models.ForeignKey(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to="qa.question"
+            ),
             preserve_default=False,
         ),
     ]

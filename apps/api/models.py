@@ -4,7 +4,7 @@ import hashlib
 from apps.accounts.models import CustomUser
 
 class ApiModel(models.Model):
-    api_name = models.CharField(name="نام رابط")
+    api_name = models.CharField(verbose_name="نام رابط",max_length=110)
     key = models.CharField(
         verbose_name="توکن",
         max_length=128,

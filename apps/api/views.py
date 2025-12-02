@@ -1,53 +1,54 @@
-from django.utils.html import strip_tags
-from django.views.generic import View
-from django.http import JsonResponse
-from apps.blog.models import Article
-import hashlib
-from .models import ApiModel
+from faker import Faker
 from django.utils.text import slugify
 
-class FrontFakeObjectsApi(View):
-    def get(self, request, *args, **kwargs):
-        from faker import Faker
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.generics import ListAPIView
 
+from apps.blog.models import Article
+from .permissions import HasValidApiToken
+from .serializers import ArticleSerializer, ArticleCreateSerializer
+
+
+class FrontFakeObjectsApi(APIView):
+
+    def validate_param(self, value, name):
+        if value is None:
+            return 0, None
+
+        try:
+            value = int(value)
+        except (TypeError, ValueError):
+            return None, f"{name} must be an integer"
+
+        if value < 0:
+            return None, f"{name} must be positive"
+        if value > 100:
+            return None, f"{name} must be <= 100"
+
+        return value, None
+
+    def get(self, request):
         fake = Faker("fa-IR")
 
-        articles = request.GET.get("articles")
-        users = request.GET.get("users")
+        articles, err_articles = self.validate_param(
+            request.GET.get("articles"), "articles"
+        )
+        users, err_users = self.validate_param(request.GET.get("users"), "users")
+
+        if err_articles or err_users:
+            return Response(
+                {"status": 400, "description": err_articles or err_users},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         data = {
             "status": 200,
+            "description": f"Created {articles} articles and {users} users successfully",
             "users": [],
             "articles": [],
-            "description": "",
         }
-
-        def validate_param(value, name):
-            if value is None:
-                return 0, None
-
-            try:
-                value = int(value)
-            except (TypeError, ValueError):
-                return None, f"{name} must be an integer"
-
-            if value < 0:
-                return None, f"{name} must be a positive number"
-
-            if value > 100:
-                return None, f"{name} must be less than or equal to 100"
-
-            return value, None
-
-        articles, err_articles = validate_param(articles, "articles")
-        users, err_users = validate_param(users, "users")
-
-        if err_articles or err_users:
-            data["status"] = 400
-            data["description"] = err_articles or err_users
-            return JsonResponse(data, status=400)
-
-        data["description"] = f"create {articles} article and {users} user successfully"
 
         for i in range(1, users + 1):
             data["users"].append(
@@ -73,68 +74,49 @@ class FrontFakeObjectsApi(View):
                 }
             )
 
-        return JsonResponse(data)
+        return Response(data)
 
 
-class DevelopLabGetArticlesApi(View):
-    def get(self, request, articles=0, *args, **kwargs):
-        data = {
-            "status": 200,
-            "articles": [],
-            "description": f"get last {articles} article succesfuly",
-        }
-        articles = Article.objects.filter(
+class DevelopLabGetArticlesApi(ListAPIView):
+
+    serializer_class = ArticleSerializer
+
+    def get_queryset(self):
+        limit = int(self.kwargs.get("articles", 0)) + 1
+        return Article.objects.filter(
             is_active=True, author__public_article=True
-        ).order_by("-write_date")[: articles + 1]
-        for _ in articles:
-            data["articles"].append(
-                {
-                    "title": _.title,
-                    "thumbnail": _.thumbnail.url,
-                    "description": strip_tags(_.description),
-                    "author": _.author.get_full_name(),
-                    "write_date": _.write_date.strftime("%Y-%m-%d %H:%M"),
-                    "pin": _.is_pin,
-                    "active": _.is_active,
-                    "verify": _.is_verify,
-                    "categories": list(_.categories.values("id", "name")),
-                }
-            )
-        if data["articles"] == []:
-            data["status"] = 404
-            data["description"] = "query is null"
-        return JsonResponse(data, safe=False)
+        ).order_by("-write_date")[:limit]
 
 
+class WriteArticle(APIView):
 
-class WriteArticle(View):
-    def get(self, request, token, *args, **kwargs):
-        hashed_token = hashlib.sha256(token.encode()).hexdigest()
+    permission_classes = [HasValidApiToken]
 
-        try:
-            api_entry = ApiModel.objects.get(token=hashed_token, is_active=True)
-        except ApiModel.DoesNotExist:
-            return JsonResponse({"status": 403, "description": "Invalid token."})
+    def post(self, request, token):
+        data = request.data.copy()
 
-        title = request.GET.get("title")
-        short_description = request.GET.get("short_description")
-        description = request.GET.get("description")
-        slug = request.GET.get("slug") or slugify(title or "")
+        if "slug" not in data or not data["slug"]:
+            data["slug"] = slugify(data.get("title", ""))
 
-        if not title:
-            return JsonResponse({"status": 400, "description": "Title is required."})
-
-        article = Article.objects.create(
-            title=title,
-            short_description=short_description or "",
-            description=description,
-            slug=slug,
-            author=api_entry.user,
-            is_active=True
+        serializer = ArticleCreateSerializer(
+            data=data, context={"author": request.api_entry.user}
         )
 
-        return JsonResponse({
-            "status": 200,
-            "description": f"Article '{article.title}' created successfully.",
-            "article_id": article.id,
-        })
+        if not serializer.is_valid():
+            return Response(
+                {
+                    "status": 400,
+                    "errors": serializer.errors,
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        article = serializer.save()
+
+        return Response(
+            {
+                "status": 200,
+                "description": f"Article '{article.title}' created successfully.",
+                "article_id": article.id,
+            }
+        )

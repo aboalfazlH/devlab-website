@@ -28,6 +28,7 @@ THIRD_PARTY_APPS = [
     "django_summernote",
     "django_select2",
     "social_django",
+    "rest_framework",
 ]
 LOCAL_APPS = [
     "apps.accounts",
@@ -140,3 +141,9 @@ SOCIAL_AUTH_PIPELINE = (
     "social_core.pipeline.social_auth.load_extra_data",
     "social_core.pipeline.user.user_details",
 )
+
+REST_FRAMEWORK = {
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ]
+}
