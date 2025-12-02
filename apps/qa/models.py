@@ -1,76 +1,74 @@
+from apps.accounts.models import CustomUser
 from django.db import models
 from django.utils import timezone
-from apps.accounts.models import CustomUser
+from django.urls import reverse
+
+
+def upload_to_question(instance, filename):
+    """Generate dynamic upload path for question thumbnails."""
+    now = timezone.now()
+    return f"qa/questions/{now:%Y/%m/%d}/{filename}"
+
+
 
 class Question(models.Model):
-    """Model definition for Question."""
+    """Represents a question submitted by users."""
 
-    def question_upload_path(instance, filename):
-        now = timezone.now()
-        return f"qa/questions/thumbnails/{now.year}{now.month}{now.day}/{filename}"
-    
-    name = models.CharField(verbose_name="نام", max_length=110)
+    name = models.CharField("نام", max_length=110)
     help_image = models.ImageField(
-        verbose_name="تصویر کمکی", blank=True, null=True, upload_to=question_upload_path
+        "تصویر کمکی", blank=True, null=True, upload_to=upload_to_question
     )
-    question_description = models.TextField(
-        verbose_name="توضیحات سوال", blank=True, null=True
-    )
-    is_active = models.BooleanField(verbose_name="فعال", default=True)
-    solved = models.BooleanField(verbose_name="حل شده", default=False)
-    is_pin = models.BooleanField(verbose_name="ویژه", default=False)
-    write_date = models.DateTimeField(verbose_name="تاریخ مطرح شدن", auto_now_add=True)
-    solve_date = models.DateTimeField(verbose_name="تاریخ حل شدن",blank=True,null=True)
+    question_description = models.TextField("توضیحات سوال", blank=True, null=True)
+    is_active = models.BooleanField("فعال", default=True)
+    solved = models.BooleanField("حل شده", default=False)
+    is_pin = models.BooleanField("ویژه", default=False)
 
-    author = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
+    write_date = models.DateTimeField("تاریخ مطرح شدن", auto_now_add=True)
+    solve_date = models.DateTimeField("تاریخ حل شدن", blank=True, null=True)
+
+    slug = models.SlugField("شناسه", unique=True)
+    author = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name="questions"
+    )
+
     def solve(self):
-        self.solve_date = timezone.now()
+        """Mark question as solved and set solve timestamp."""
         self.solved = True
+        self.solve_date = timezone.now()
+        self.save(update_fields=["solved", "solve_date"])
+
+    def get_absolute_url(self):
+        """Return URL for detailed view of the question."""
+        return reverse("question-detail", kwargs={"slug": self.slug})
 
     class Meta:
-        """Meta definition for Question."""
-
         verbose_name = "سوال"
         verbose_name_plural = "سوالات"
+        ordering = ["-write_date"]
 
     def __str__(self):
-        """Unicode representation of Question."""
-        return f"{self.name}"
+        return self.name
 
 
 class Answer(models.Model):
-    """Model definition for Answer."""
-    def answer_upload_path(instance, filename):
-        now = timezone.now()
-        return f"qa/answer/thumbnails/{now.year}{now.month}{now.day}/{filename}"
+    """Represents an answer submitted for a question."""
 
-    name = models.TextField(max_length=110, verbose_name="نام")
-    help_image = models.ImageField(
-        verbose_name="تصویر کمکی", blank=True, null=True, upload_to=answer_upload_path
+    name = models.CharField("نام", max_length=110)
+    answer_description = models.TextField("توضیحات پاسخ", blank=True, null=True)
+    is_active = models.BooleanField("فعال", default=True)
+    is_best = models.BooleanField("بهترین", default=False)
+
+    write_date = models.DateTimeField("تاریخ مطرح شدن", auto_now_add=True)
+    slug = models.SlugField("شناسه", unique=True)
+
+    question = models.ForeignKey(
+        Question, on_delete=models.CASCADE, related_name="answers"
     )
-    answer_description = models.TextField(
-        verbose_name="توضیحات پاسخ", blank=True, null=True
-    )
-    is_active = models.BooleanField(verbose_name="فعال", default=True)
-    is_best = models.BooleanField(verbose_name="بهترین", default=False)
-    write_date = models.DateTimeField(verbose_name="تاریخ مطرح شدن", auto_now_add=True)
 
     class Meta:
-        """Meta definition for Answer."""
-
         verbose_name = "پاسخ"
-        verbose_name_plural = "پاسخ ها"
+        verbose_name_plural = "پاسخ‌ها"
+        ordering = ["write_date"]
 
     def __str__(self):
-        """Unicode representation of Answer."""
-        return f"{self.name}"
-
-    class Meta:
-        """Meta definition for Answer."""
-
-        verbose_name = "Answer"
-        verbose_name_plural = "Answers"
-
-    def __str__(self):
-        """Unicode representation of Answer."""
-        pass
+        return self.name

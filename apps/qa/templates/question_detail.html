@@ -1,0 +1,48 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+{% endblock title %}
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm p-4">
+        <h2 class="mb-3">{{ question.name }}</h2>
+
+        {% if question.help_image %}
+            <img src="{{ question.help_image.url }}" class="img-fluid rounded mb-3">
+        {% endif %}
+
+        <p class="mb-4">{{ question.question_description }}</p>
+
+        <div class="d-flex justify-content-between text-muted mb-3">
+            <small>نویسنده: {{ question.author.username }}</small>
+            <small>{{ question.write_date|date:"Y/m/d H:i" }}</small>
+        </div>
+
+        <hr>
+
+        <h4 class="mt-4">پاسخ‌ها</h4>
+
+        {% if answers %}
+            {% for answer in answers %}
+                <div class="card my-3 p-3">
+                    <h6 class="fw-bold">
+                        {{ answer.name }}
+                        {% if answer.is_best %}
+                            <span class="badge bg-success">بهترین</span>
+                        {% endif %}
+                    </h6>
+
+                    <p>{{ answer.answer_description }}</p>
+
+                    <small class="text-muted">
+                        {{ answer.write_date|date:"Y/m/d H:i" }}
+                    </small>
+                </div>
+            {% endfor %}
+
+        {% else %}
+            <p class="text-muted mt-3">هنوز پاسخی ثبت نشده است.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
