@@ -9,7 +9,7 @@
     {% block meta %}{% endblock meta %}
 
     <!-- Title -->
-    <title>{% block title %}وبسایت من{% endblock title %}</title>
+    <title>آزمایشگاه توسعه|{% block title %}{% endblock title %}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
@@ -74,7 +74,7 @@
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return { q: params.term }; // Search term
+                        return { q: params.term };
                     },
                     processResults: function (data) {
                         return { results: data.results };

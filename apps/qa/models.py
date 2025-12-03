@@ -39,7 +39,7 @@ class Question(models.Model):
 
     def get_absolute_url(self):
         """Return URL for detailed view of the question."""
-        return reverse("question-detail", kwargs={"slug": self.slug})
+        return reverse("qa:question-detail", kwargs={"slug": self.slug})
 
     class Meta:
         verbose_name = "سوال"

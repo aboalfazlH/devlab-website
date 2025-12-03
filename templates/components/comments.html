@@ -1,0 +1,20 @@
+<div class="comments-section">
+    <h4>نظرات</h4>
+
+    <!-- فرم ارسال کامنت اصلی -->
+    <form action="{% url 'blog:comment-create' article.slug %}" method="post" class="mb-4">
+        {% csrf_token %}
+        <textarea class="form-control mb-2" name="content" rows="3" placeholder="نظر خود را بنویسید..." required></textarea>
+        <button type="submit" class="btn btn-primary btn-sm">ارسال نظر</button>
+    </form>
+
+    {% if comments %}
+        <ul class="list-unstyled">
+            {% for comment in comments %}
+                {% include "components/comment_recursive.html" with comment=comment article=article %}
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+    {% endif %}
+</div>

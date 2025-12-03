@@ -1,0 +1,22 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+حذف {{ question }}
+{% endblock title %}
+
+{% block meta %}
+{% endblock meta %}
+
+{% block styles %}
+{% endblock styles %}
+
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    <h2>مطمعنی میخوای {{ question }} رو حذف کنی؟</h2>
+    
+    <p>این عمل قابل جبران نیست</p>
+    <button class="btn btn-danger" type="submit">بله</button>
+    <a href="{% url 'qa:questions' %}" class="btn btn-info">خیر،برگرد</a>
+</form>
+{% endblock content %}
