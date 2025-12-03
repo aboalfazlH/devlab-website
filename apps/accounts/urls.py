@@ -5,11 +5,13 @@ from .views import (
     CustomLogoutView,
     ProfileDetailView,
     CustomUserUpdateView,
+    CustomUserListView
 )
 from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
+    path("users/", CustomUserListView.as_view(), name="users"),
     path("sign-up/", SignUpView.as_view(), name="sign-up"),
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", CustomLogoutView.as_view(), name="logout"),
