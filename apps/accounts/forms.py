@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from .models import CustomUser
 from django.contrib.auth import authenticate
-
+from django.db.models import Q
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
@@ -52,9 +52,9 @@ class LoginForm(forms.Form):
         cleaned_data = super().clean()
         username = cleaned_data.get("username")
         password = cleaned_data.get("password")
-
+        auth = CustomUser.objects.get(Q(username=username)|Q(email=username)).username
         if username and password:
-            user = authenticate(username=username, password=password)
+            user = authenticate(username=auth, password=password)
             if not user:
                 raise forms.ValidationError("نام کاربری یا رمز عبور اشتباه است.")
         else:

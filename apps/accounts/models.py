@@ -43,6 +43,12 @@ class CustomUser(AbstractUser):
                 "فقط لینک معتبر Telegram وارد کنید. مثال: https://t.me/username"
             )
 
+    def validate_phone_number(value):
+        pattern = r"^(\+98|0)?9\d{9}$"
+        if not re.match(pattern, value):
+            raise ValidationError(
+                "لطفا یک شماره ایرانی معتبر وارد کند"
+            )
     email = models.EmailField(unique=True, verbose_name=_("email"))
     avatar = models.ImageField(
         verbose_name=_("avatar"), upload_to=avatar_upload_path, default="auth/avatars/20251204/person.png"
@@ -52,7 +58,7 @@ class CustomUser(AbstractUser):
     )
     bio = models.TextField(verbose_name="بیوگرافی", blank=True, null=True)
     phone_number = models.CharField(
-        verbose_name="شماره تلفن", max_length=15, blank=True, null=True
+        verbose_name="شماره تلفن", max_length=15, blank=True, null=True,validators=[validate_phone_number]
     )
     git_account = models.URLField(
         verbose_name="حساب گیت هاب/گیت لب",
@@ -92,8 +98,12 @@ class CustomUser(AbstractUser):
         default=False,
     )
 
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ("phone_number","username")
     public_email = models.EmailField(verbose_name="ایمیل عمومی",blank=True,null=True)
     public_phone_number = models.EmailField(verbose_name="شماره تلفن عمومی",blank=True,null=True)
+    
+    
     @property
     def has_link(self):
         links = [
@@ -125,4 +135,4 @@ class ProfileLink(BaseLink):
         verbose_name_plural = "لینک ها"
 
     def __str__(self):
-        return f"{self.link_type} {self.user}"
+        return f"{self.link_type} ی {self.user}"
