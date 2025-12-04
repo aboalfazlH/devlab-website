@@ -10,6 +10,11 @@
 {% block content %}
 <div class="container my-5">
     <h3 class="mb-4">سوال‌ها</h3>
+    
+    {% if user.is_authenticated %}
+    <a href="{% url 'qa:question-create' %}" class="btn btn-primary">تو هم بپرس</a>
+    <hr>
+    {% endif %}
     <div class="row">
         {% for question in questions %}
         <div class="col-md-12 mb-3" onclick="window.location='{{ question.get_absolute_url }}'">

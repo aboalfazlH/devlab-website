@@ -34,9 +34,6 @@
                         {% if answer.is_best %}
                         <span class="badge bg-success me-1">بهترین</span>
                         {% endif %}
-                        {% for category in answer.categories.all %}
-                        <span class="badge bg-primary me-1">{{ category.name }}</span>
-                        {% endfor %}
                     </h6>
 
                     <p class="mb-2">{{ answer.answer_description|safe }}</p>
@@ -62,7 +59,7 @@
         {% endif %}
         <form action="{% url 'qa:answer-create' question.slug %}" method="post" class="mb-4">
             {% csrf_token %}
-            <textarea class="summernote" name="content" rows="3" required></textarea>
+            <textarea class="summernote" name="content" rows="3" style="height: 100px;width: suto;" required></textarea>
             <br>
             <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
         </form>

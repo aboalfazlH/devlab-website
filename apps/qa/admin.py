@@ -64,6 +64,7 @@ class AnswerAdmin(admin.ModelAdmin):
     """Admin View for Answer"""
 
     list_display = (
+        "__str__",
         "is_active",
         "is_best",
         "write_date",
@@ -74,7 +75,7 @@ class AnswerAdmin(admin.ModelAdmin):
         "write_date",
     )
     readonly_fields = ("write_date",)
-    search_fields = ("name", "answer_description")
+    search_fields = ("answer_description",)
     date_hierarchy = "write_date"
     ordering = ("-write_date",)
 
@@ -86,7 +87,8 @@ class AnswerAdmin(admin.ModelAdmin):
                     "answer_description",
                     "is_active",
                     "is_best",
-                    "is_pin",
+                    "likes",
+                    "dis_likes",
                 )
             },
         ),
