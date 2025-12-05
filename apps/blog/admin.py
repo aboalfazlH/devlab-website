@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib import admin
 from .models import Article, ArticleCategory,ArticleComment
 from django_summernote.admin import SummernoteModelAdmin
@@ -83,8 +84,15 @@ class ArticleAdmin(SummernoteModelAdmin):
             },
         ),
     )
+    
+    @admin.action(description='حذف نرم مقاله ')
+    def soft_delete(modeladmin, request, queryset):
+        for obj in queryset:
+            obj.soft_delete()
+        count = len(queryset)
+        messages.success(request, f"حذف نرم {count} مقاله موفق بود")
 
-
+    actions = [soft_delete]
 @admin.register(ArticleCategory)
 class ArticleCategoryAdmin(admin.ModelAdmin):
     list_display = ("name",)

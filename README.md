@@ -43,7 +43,6 @@ A website with features for developers, including Q&A, blog, Git repository, col
 ![Commits (month)](https://img.shields.io/github/commit-activity/m/aboalfazlH/devlab-website?style=for-the-badge&logo=github)  
 ![Last Commit](https://img.shields.io/github/last-commit/aboalfazlH/devlab-website?style=for-the-badge&logo=github)  
 ![License](https://img.shields.io/github/license/aboalfazlH/devlab-website?style=for-the-badge&logo=open-source-initiative)  
-![Repo Size](https://img.shields.io/github/repo-size/aboalfazlH/devlab-website?style=for-the-badge&logo=github)
 
 ### Contribution
 
