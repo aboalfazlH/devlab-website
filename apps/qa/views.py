@@ -143,4 +143,25 @@ class AnswerDeleteView(LoginRequiredMixin, View):
         else:
             messages.error(request, "شما اجازه حذف این پاسخ را ندارید.")
 
-        return redirect("blog:article-detail", slug=slug)
+        return redirect("qa:question-detail", slug=slug)
+
+class AnswerBestView(LoginRequiredMixin, View):
+    def post(self, request, slug, pk):
+        question = Question.objects.get(slug=slug)
+        answer = get_object_or_404(Answer, id=pk)
+        
+        if Answer.objects.filter(question=question,is_active=True,is_best=True).exists():
+            messages.error(request,"این سوال یک پاسخ به عنوان بهترین دارد")
+            return redirect("qa:question-detail", slug=slug)    
+        
+        if request.user == question.author or request.user.is_superuser:
+            answer.is_best = not answer.is_best
+            answer.save()
+            if answer.is_best:
+                messages.success(request, "پاسخ به عنوان بهترین پاسخ انتخاب شد.")
+            else:
+                messages.success(request, "پاسخ دیگر بهترین نیست.")
+        else:
+            messages.error(request, "شما اجازه ندارید این پاسخ را به عنوان بهترین انتخاب کنید.")
+
+        return redirect("qa:question-detail", slug=slug)

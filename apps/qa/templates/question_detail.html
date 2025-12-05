@@ -54,6 +54,14 @@
                                 class="btn btn-sm btn-outline-danger">حذف</button>
                         </form>
                         {% endif %}
+
+                        {% if user == question.author or user.is_superuser %}
+                        <form method="post" action="{% url 'qa:answer-best' question.slug answer.id %}">
+                            {% csrf_token %}
+                            <button style="display: inline;" type="submit"
+                                class="btn btn-sm btn-info">بهترین</button>
+                        </form>
+                        {% endif %}
                     </div>
                 </div>
             </div>
