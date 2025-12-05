@@ -45,8 +45,8 @@
 
                     <div class="mt-3">
                         <button class="btn btn-sm btn-outline-secondary me-1">گزارش</button>
-                        {% if user.is_authenticated and user == answer.user %}
-                        <button class="btn btn-sm btn-outline-danger">ویرایش</button>
+                        {% if user == answer.user %}
+                        <a href="{% url 'qa:answer-edit' question.slug answer.id %}" class="btn btn-sm btn-outline-danger">ویرایش</a>
                         {% endif %}
                     </div>
                 </div>

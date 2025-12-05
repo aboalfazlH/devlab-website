@@ -13,7 +13,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy,reverse
 
 
 class QuestionListView(ListView):
@@ -77,9 +77,8 @@ class QuestionUpdateView(UpdateView):
     template_name = "question_update.html"
 
     def dispatch(self, request, *args, **kwargs):
-        question = self.object
-        article = self.get_object()
-        if not request.user.is_superuser and request.user != article.author:
+        question = self.get_object()
+        if not request.user.is_superuser and request.user != question.author:
             return HttpResponseForbidden("شما اجازه حذف این سوال را ندارید.")
         return super().dispatch(request, *args, **kwargs)
 
@@ -121,3 +120,14 @@ class AnswerCreateView(View):
 
         messages.success(request, "پاسخ شما ثبت شد.")
         return redirect(question.get_absolute_url())
+
+
+class AnswerUpdateView(UpdateView):
+    model = Answer
+    template_name = "edit_answer.html"
+    fields = ["answer_description"]
+    pk_url_kwarg = "pk"
+
+    def get_success_url(self):
+        question_slug = self.object.question.slug
+        return reverse("qa:question-detail", kwargs={"slug": question_slug})
