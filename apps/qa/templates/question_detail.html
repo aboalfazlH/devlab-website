@@ -44,9 +44,15 @@
                     </small>
 
                     <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-secondary me-1">گزارش</button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" style="display: inline;">گزارش</button>
                         {% if user == answer.user %}
-                        <a href="{% url 'qa:answer-edit' question.slug answer.id %}" class="btn btn-sm btn-outline-danger">ویرایش</a>
+                        <a href="{% url 'qa:answer-edit' question.slug answer.id %}" style="display: inline;"
+                            class="btn btn-sm btn-outline-info">ویرایش</a>
+                        <form method="post" action="{% url 'qa:answer-delete' question.slug answer.id %}">
+                            {% csrf_token %}
+                            <button style="display: inline;" type="submit"
+                                class="btn btn-sm btn-outline-danger">حذف</button>
+                        </form>
                         {% endif %}
                     </div>
                 </div>

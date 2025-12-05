@@ -11,4 +11,5 @@ urlpatterns = [
     path("question/<slug:slug>/delete/",views.QuestionDeleteView.as_view(),name="question-delete"),
     path("question/<slug:slug>/answer/new",views.AnswerCreateView.as_view(),name="answer-create"),
     path("question/<slug:slug>/answer/<int:pk>/edit/",views.AnswerUpdateView.as_view(),name="answer-edit"),
+    path("question/<slug:slug>/answer/<int:pk>/delete/",views.AnswerDeleteView.as_view(),name="answer-delete"),
 ]

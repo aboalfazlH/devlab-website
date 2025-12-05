@@ -131,3 +131,16 @@ class AnswerUpdateView(UpdateView):
     def get_success_url(self):
         question_slug = self.object.question.slug
         return reverse("qa:question-detail", kwargs={"slug": question_slug})
+
+
+class AnswerDeleteView(LoginRequiredMixin, View):
+    def post(self, request, slug, pk):
+        answer = get_object_or_404(Answer, id=pk)
+
+        if request.user == answer.user or request.user.is_superuser:
+            answer.delete()
+            messages.success(request, "پاسخ حذف شد.")
+        else:
+            messages.error(request, "شما اجازه حذف این پاسخ را ندارید.")
+
+        return redirect("blog:article-detail", slug=slug)
