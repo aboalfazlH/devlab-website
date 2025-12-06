@@ -1,7 +1,7 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block title %}
-نوشتن مقاله
+تغییر مقاله
 {% endblock title %}
 
 {% block styles %}
@@ -9,10 +9,10 @@
 {% endblock styles %}
 
 {% block content %}
-<h2 class="title">مقاله بنویس</h2>
+<h2 class="title">تغییر دادن {{ article }}</h2>
 <form action="" class="article-form" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit" class="btn btn-success">ثبت مقاله</button>
+    <button type="submit" class="btn btn-success">ثبت تغییرات</button>
 </form>
 {% endblock content %}

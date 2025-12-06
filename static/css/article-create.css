@@ -6,7 +6,9 @@
     margin: 0 auto;
     padding: 20px;
 }
-
+.title {
+    text-align: center;
+}
 .article-form input,
 .article-form textarea {
     width: 100%;

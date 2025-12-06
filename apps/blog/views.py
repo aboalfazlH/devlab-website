@@ -74,7 +74,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 class ArticleUpdateView(UpdateView):
     model = Article
     form_class = ArticleForm
-    template_name = "update_article.html"
+    template_name = "article-update.html"
     context_object_name = "article"
     slug_field = "slug"
     slug_url_kwarg = "slug"
