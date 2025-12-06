@@ -43,12 +43,15 @@ class ArticleListView(ListView):
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
     form_class = ArticleForm
-    template_name = "write_article.html"
+    template_name = "article-create.html"
     success_url = reverse_lazy("blog:articles")
 
     def dispatch(self, request, *args, **kwargs):
-        # User only write 10 article
+        response = super().dispatch(request, *args, **kwargs)
         
+        if not request.user.is_authenticated:
+            return response
+
         today = now().date()
         articles_today = Article.objects.filter(
             author=request.user, write_date__date=today
@@ -60,8 +63,8 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
             return HttpResponseForbidden(
                 "شما نمی‌توانید بیش از ۱۰ مقاله در روز بنویسید."
             )
-        return super().dispatch(request, *args, **kwargs)
 
+        return response
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
@@ -71,7 +74,7 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
 class ArticleUpdateView(UpdateView):
     model = Article
     form_class = ArticleForm
-    template_name = "update_article.html"
+    template_name = "article-update.html"
     context_object_name = "article"
     slug_field = "slug"
     slug_url_kwarg = "slug"
@@ -91,7 +94,7 @@ class ArticleUpdateView(UpdateView):
 
 class ArticleDetailView(DetailView):
     model = Article
-    template_name = "article_detail.html"
+    template_name = "article-detail.html"
     context_object_name = "article"
     slug_field = "slug"
     slug_url_kwarg = "slug"
@@ -116,7 +119,7 @@ class ArticleDetailView(DetailView):
 
 class ArticleDeleteView(DeleteView):
     model = Article
-    template_name = "article_delete.html"
+    template_name = "article-delete.html"
     context_object_name = "article"
     slug_field = "slug"
     slug_url_kwarg = "slug"

@@ -1,0 +1,32 @@
+.article-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.title {
+    text-align: center;
+}
+.article-form input,
+.article-form textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color .25s ease;
+}
+
+.article-form input:focus,
+.article-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.article-short-description {
+    min-height: 120px;
+    resize: vertical;
+}

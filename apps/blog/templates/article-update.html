@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}
+تغییر مقاله
+{% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/article-create.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<h2 class="title">تغییر دادن {{ article }}</h2>
+<form action="" class="article-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">ثبت تغییرات</button>
+</form>
+{% endblock content %}

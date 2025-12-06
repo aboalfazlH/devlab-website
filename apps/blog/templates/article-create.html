@@ -1,0 +1,18 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}
+نوشتن مقاله
+{% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/article-create.css' %}">
+{% endblock styles %}
+
+{% block content %}
+<h2 class="title">مقاله بنویس</h2>
+<form action="" class="article-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-success">ثبت مقاله</button>
+</form>
+{% endblock content %}
