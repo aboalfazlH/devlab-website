@@ -47,8 +47,11 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy("blog:articles")
 
     def dispatch(self, request, *args, **kwargs):
-        # User only write 10 article
+        response = super().dispatch(request, *args, **kwargs)
         
+        if not request.user.is_authenticated:
+            return response
+
         today = now().date()
         articles_today = Article.objects.filter(
             author=request.user, write_date__date=today
@@ -60,8 +63,8 @@ class ArticleCreateView(LoginRequiredMixin, CreateView):
             return HttpResponseForbidden(
                 "شما نمی‌توانید بیش از ۱۰ مقاله در روز بنویسید."
             )
-        return super().dispatch(request, *args, **kwargs)
 
+        return response
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
