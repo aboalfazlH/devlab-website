@@ -1,0 +1,64 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container py-4">
+    <h2 class="mb-4">کاربران</h2>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for user in page_obj.object_list %}
+        <div class="col">
+            <div class="card h-100" onclick="window.location='{{ user.get_absolute_url }}'">
+                <div class="text-center mt-3">
+                    {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" class="rounded-circle" style="width: 80px; height: 80px;" alt="{{ user.username }}">
+                    {% else %}
+                        <img src="{% static 'default_avatar.png' %}" class="rounded-circle" style="width: 80px; height: 80px;" alt="Default Avatar">
+                    {% endif %}
+                </div>
+                
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ user.get_full_name|default:user.username }}</h5>
+
+                    {% if user.about %}
+                        <p class="card-text">{{ user.about|truncatechars:100 }}</p>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-center flex-wrap gap-1 mt-2">
+                        {% if user.git_account %}
+                            <a href="{{ user.git_account }}" target="_blank" class="btn btn-outline-dark btn-sm">Git</a>
+                        {% endif %}
+                        {% if user.website %}
+                            <a href="{{ user.website }}" target="_blank" class="btn btn-outline-primary btn-sm">Website</a>
+                        {% endif %}
+                        {% if user.facebook %}
+                            <a href="{{ user.facebook }}" target="_blank" class="btn btn-outline-primary btn-sm">Facebook</a>
+                        {% endif %}
+                        {% if user.instagram %}
+                            <a href="{{ user.instagram }}" target="_blank" class="btn btn-outline-danger btn-sm">Instagram</a>
+                        {% endif %}
+                        {% if user.linkedin %}
+                            <a href="{{ user.linkedin }}" target="_blank" class="btn btn-outline-info btn-sm">LinkedIn</a>
+                        {% endif %}
+                        {% if user.telegram %}
+                            <a href="{{ user.telegram }}" target="_blank" class="btn btn-outline-primary btn-sm">Telegram</a>
+                        {% endif %}
+                    </div>
+
+                    {% if user.profilelink_set.all %}
+                        <hr>
+                        <ul class="list-unstyled mb-0">
+                            {% for link in user.profilelink_set.all %}
+                                <li><a href="{{ link.url }}" target="_blank">{{ link.link_type }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+            <p class="text-center">هیچ کاربری یافت نشد.</p>
+        {% endfor %}
+    </div>
+    {% include 'components/pagination.html' %}
+{% endblock %}

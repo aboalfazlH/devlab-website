@@ -1,0 +1,24 @@
+.card {
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.1s;
+}
+.card:hover {
+    transform: translateY(-2px);
+}
+.vote-box {
+    text-align: center;
+    width: 60px;
+    margin-right: 15px;
+}
+.vote-btn {
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #666;
+}
+.vote-btn:hover {
+    color: #000;
+}
+.category-badge {
+    margin-right: 5px;
+}

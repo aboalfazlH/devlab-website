@@ -1,0 +1,24 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% block title %}
+حذف {{ article }}
+{% endblock title %}
+
+{% block meta %}
+{% endblock meta %}
+
+{% block content %}
+<div class="container">
+    <form action="" method="post">
+        {% csrf_token %}
+        <h2 class="text-center mb-4">مطمعنی میخوای {{ article }} رو حذف کنی؟</h2>
+        {% if user.is_staff %}
+        <p class="text-center mb-4 text-danger">این عمل قابل جبران نیست</p>
+        {% endif %}
+
+        <div class="text-center">
+            <button class="btn btn-danger btn-lg" type="submit">بله</button>
+            <a href="{% url 'blog:articles' %}" class="btn btn-info btn-lg ms-3">خیر، برگرد</a>
+        </div>
+    </form>
+{% endblock content %}

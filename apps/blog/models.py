@@ -1,15 +1,15 @@
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+
 from unidecode import unidecode
 import re
-from apps.accounts.models import CustomUser
+
 from apps.core.models import BaseCategory, BaseComment
+from apps.accounts.models import CustomUser
 
 
-# ------------------------------
 # Article Category Model
-# ------------------------------
 class ArticleCategory(BaseCategory):
     """Model representing an article category."""
 
@@ -27,23 +27,16 @@ class ArticleCategory(BaseCategory):
         return self.name
 
 
-# ------------------------------
-# Article Model
-# ------------------------------
 class Article(models.Model):
     """Model representing an article."""
 
-    # --------------------------
     # File upload path
-    # --------------------------
     def thumbnail_upload_path(instance, filename):
         """Generate upload path for thumbnail images."""
         now = timezone.now()
         return f"blog/thumbnails/{now.year}{now.month}{now.day}/{filename}"
 
-    # --------------------------
     # Fields
-    # --------------------------
     title = models.CharField(max_length=110, verbose_name="موضوع")
     thumbnail = models.ImageField(
         verbose_name="تصویر بندانگشتی",
@@ -78,17 +71,13 @@ class Article(models.Model):
         ArticleCategory, related_name="articles", verbose_name="دسته‌بندی‌ها"
     )
 
-    # --------------------------
     # Meta options
-    # --------------------------
     class Meta:
         verbose_name = "مقاله"
         verbose_name_plural = "مقالات"
         ordering = ["-write_date"]
 
-    # --------------------------
     # Properties
-    # --------------------------
     @property
     def status(self):
         """Return a human-readable status of the article."""
@@ -105,9 +94,7 @@ class Article(models.Model):
         """Return True if the article has more than 1000 views."""
         return self.views >= 1000
 
-    # --------------------------
-    # Custom methods
-    # --------------------------
+    # methods
     def soft_delete(self):
         """Soft delete the article by marking it inactive."""
         self.is_active = False
@@ -126,9 +113,6 @@ class Article(models.Model):
         """Return the absolute URL to the article detail page."""
         return reverse("blog:article-detail", kwargs={"slug": self.slug})
 
-    # --------------------------
-    # Overridden save method
-    # --------------------------
     def save(self, *args, **kwargs):
         """Auto-generate a unique slug if not provided."""
         if not self.slug or self.slug.strip() == "":
@@ -151,9 +135,7 @@ class Article(models.Model):
 
         super().save(*args, **kwargs)
 
-    # --------------------------
-    # String representation
-    # --------------------------
+    # magic methods
     def __str__(self):
         return self.title
 

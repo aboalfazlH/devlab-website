@@ -2,5 +2,7 @@ from django.apps import AppConfig
 
 
 class SubscriptionConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'apps.subscription'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "apps.subscription"
+    label = "subscription"
+    verbose_name = "اشتراک"

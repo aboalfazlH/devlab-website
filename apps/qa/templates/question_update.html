@@ -1,18 +1,16 @@
 {% extends 'base/base.html' %}
-
 {% block title %}
+پرسیدن سوال
 {% endblock title %}
-
-{% block meta %}
-{% endblock meta %}
 
 {% block styles %}
 {% endblock styles %}
 
 {% block content %}
+<h2>سوالت رو عوض کن!</h2>
 <form action="" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit"></button>
+    <button type="submit" class="btn btn-success">تغییر سوال</button>
 </form>
 {% endblock content %}

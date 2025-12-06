@@ -9,7 +9,7 @@
     {% block meta %}{% endblock meta %}
 
     <!-- Title -->
-    <title>{% block title %}وبسایت من{% endblock title %}</title>
+    <title>آزمایشگاه توسعه|{% block title %}{% endblock title %}</title>
 
     <!-- Favicon -->
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
@@ -58,6 +58,7 @@
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
     <script src="{% static 'js/linkchecker.js' %}"></script>
+    <script src="{% static 'js/hidemessage.js' %}"></script>
 
     <!-- Summernote CSS/JS -->
     <link href="{% static 'summernote/summernote-bs5.min.css' %}" rel="stylesheet">
@@ -73,7 +74,7 @@
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
-                        return { q: params.term }; // Search term
+                        return { q: params.term };
                     },
                     processResults: function (data) {
                         return { results: data.results };
@@ -99,7 +100,6 @@
             });
         });
     </script>
-
     {% block scripts %}{% endblock scripts %}
 </body>
 

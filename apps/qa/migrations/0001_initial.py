@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(verbose_name='نام')),
-                ('help_image', models.ImageField(blank=True, null=True, upload_to=apps.qa.models.Question.question_upload_path, verbose_name='تصویر کمکی')),
+                ('help_image', models.ImageField(blank=True, null=True, upload_to=apps.qa.models.upload_to_question, verbose_name='تصویر کمکی')),
                 ('question_description', models.TextField(blank=True, null=True, verbose_name='توضیحات سوال')),
                 ('is_active', models.BooleanField(default=True, verbose_name='فعال')),
                 ('solved', models.BooleanField(default=False, verbose_name='حل شده')),

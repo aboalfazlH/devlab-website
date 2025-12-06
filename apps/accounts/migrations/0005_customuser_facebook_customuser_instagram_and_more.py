@@ -14,22 +14,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customuser',
             name='facebook',
-            field=models.URLField(blank=True, null=True, validators=[apps.accounts.models.CustomUser.validate_facebook_link], verbose_name='فیس بوک'),
+            field=models.URLField(blank=True, null=True, validators=[apps.accounts.validators.validate_facebook_link], verbose_name='فیس بوک'),
         ),
         migrations.AddField(
             model_name='customuser',
             name='instagram',
-            field=models.URLField(blank=True, null=True, validators=[apps.accounts.models.CustomUser.validate_instagram_link], verbose_name='اینستاگرام'),
+            field=models.URLField(blank=True, null=True, validators=[apps.accounts.validators.validate_instagram_link], verbose_name='اینستاگرام'),
         ),
         migrations.AddField(
             model_name='customuser',
             name='linkedin',
-            field=models.URLField(blank=True, null=True, validators=[apps.accounts.models.CustomUser.validate_linkedin_link], verbose_name='لینکدین'),
+            field=models.URLField(blank=True, null=True, validators=[apps.accounts.validators.validate_linkedin_link], verbose_name='لینکدین'),
         ),
         migrations.AddField(
             model_name='customuser',
             name='telegram',
-            field=models.URLField(blank=True, null=True, validators=[apps.accounts.models.CustomUser.validate_telegram_link], verbose_name='تلگرام'),
+            field=models.URLField(blank=True, null=True, validators=[apps.accounts.validators.validate_telegram_link], verbose_name='تلگرام'),
         ),
         migrations.AddField(
             model_name='customuser',

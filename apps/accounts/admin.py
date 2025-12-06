@@ -1,15 +1,17 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django_summernote.admin import SummernoteModelAdmin
-from .models import CustomUser
+from .models import CustomUser, ProfileLink
 from .forms import CustomUserChangeForm, CustomUserCreationForm
 
 
 @admin.register(CustomUser)
-class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
+class CustomUserAdmin(SummernoteModelAdmin, UserAdmin):
     """Admin View for CustomUser"""
+
     form = CustomUserChangeForm
     add_form = CustomUserCreationForm
+
     list_display = (
         "username",
         "get_full_name",
@@ -17,12 +19,14 @@ class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
         "is_staff",
         "is_superuser",
     )
+
     list_display_links = ("username",)
     list_editable = ("is_active", "is_staff", "is_superuser")
     list_filter = ("is_active", "is_staff", "is_superuser", "date_joined", "last_login")
     readonly_fields = ("date_joined", "last_login")
-    search_fields = ("username", "get_full_name")
+    search_fields = ("username", "first_name", "last_name")
     date_hierarchy = "date_joined"
+    list_per_page = 25
     ordering = (
         "-last_login",
         "-date_joined",
@@ -44,6 +48,7 @@ class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
             },
         ),
     )
+
     fieldsets = (
         (
             None,
@@ -53,21 +58,41 @@ class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
             },
         ),
         (
-            "personal_info",
+            "اطلاعات شخصی",
             {
                 "classes": ("wide",),
-                "fields": ("first_name", "last_name", "about", "bio", "avatar","git_account"),
+                "fields": (
+                    "first_name",
+                    "last_name",
+                    "about",
+                    "bio",
+                    "avatar",
+                ),
             },
         ),
         (
-            "date&times",
+            "تاریخ و ساعت",
             {
                 "classes": ("collapse",),
                 "fields": ("date_joined", "last_login"),
             },
         ),
         (
-            "advanced",
+            "لینک ها",
+            {
+                "classes": ("collapse",),
+                "fields": (
+                    "git_account",
+                    "website",
+                    "facebook",
+                    "instagram",
+                    "linkedin",
+                    "telegram",
+                ),
+            },
+        ),
+        (
+            "پیشرفته",
             {
                 "classes": ("collapse",),
                 "fields": (
@@ -80,3 +105,8 @@ class CustomUserAdmin(SummernoteModelAdmin,UserAdmin):
             },
         ),
     )
+
+
+admin.site.register(
+    ProfileLink,
+)

@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='customuser',
             name='git_account',
-            field=models.URLField(blank=True, null=True, validators=[apps.accounts.models.CustomUser.validate_git_url], verbose_name='حساب گیت هاب/گیت لب'),
+            field=models.URLField(blank=True, null=True, validators=[apps.accounts.validators.validate_git_url], verbose_name='حساب گیت هاب/گیت لب'),
         ),
     ]

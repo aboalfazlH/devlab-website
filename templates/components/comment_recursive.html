@@ -1,0 +1,30 @@
+<li class="border p-3 rounded mb-2 {% if comment.is_reply %}bg-light{% endif %}">
+    <div class="d-flex justify-content-between">
+        <strong>{{ comment.user }}</strong>
+        <small class="text-muted">{{ comment.write_date|timesince }} قبل</small>
+    </div>
+
+    <p class="mt-2">{{ comment.content }}</p>
+
+    {% if request.user == comment.user or request.user.is_superuser %}
+    <form action="{% url 'blog:comment-delete' article.slug comment.id %}" method="post" class="mb-2">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+    </form>
+    {% endif %}
+
+    <form action="{% url 'blog:comment-create' article.slug %}" method="post" class="mb-2 ps-3">
+        {% csrf_token %}
+        <input type="hidden" name="parent_comment" value="{{ comment.id }}">
+        <textarea class="form-control mb-1" name="content" rows="2" placeholder="پاسخ دهید..." required></textarea>
+        <button type="submit" class="btn btn-secondary btn-sm">ارسال پاسخ</button>
+    </form>
+
+    {% if comment.replies.exists %}
+        <ul class="list-unstyled ps-4 mt-2">
+            {% for child in comment.replies.all %}
+                {% include "components/comment_recursive.html" with comment=child article=article %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+</li>

@@ -1,0 +1,15 @@
+{% extends 'base/base.html' %}
+{% block title %}
+{{ user }} میخوای خارج شی؟
+{% endblock title %}
+
+{% block content %}
+<h1>لطفا تایید کنید</h1>
+<p> آیا{{ user }} قصد خروج دارد؟</p>
+<form action="" method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">بله</button>
+    <a href="{% url 'core:home-page' %}" class="btn btn-info">نه،من را به صفحه اصلی برگردان</a>
+</form>
+{% endblock content %}
+    

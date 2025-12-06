@@ -1,22 +1,16 @@
 from django.urls import path
-from .views import (
-    SignUpView,
-    LoginView,
-    CustomLogoutView,
-    CustomUserDetailView,
-    UserDetailView,
-    CustomUserUpdateView,
-)
+from . import views
 from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    path("sign-up/", SignUpView.as_view(), name="sign-up"),
-    path("login/", LoginView.as_view(), name="login"),
-    path("logout/", CustomLogoutView.as_view(), name="logout"),
+    path("users/", views.CustomUserListView.as_view(), name="users"),
+    path("sign-up/", views.SignUpView.as_view(), name="sign-up"),
+    path("login/", views.LoginView.as_view(), name="login"),
+    path("logout/", views.CustomLogoutView.as_view(), name="logout"),
     path(
         "edit/",
-        CustomUserUpdateView.as_view(),
+        views.CustomUserUpdateView.as_view(),
         name="users-profile-edit",
     ),
     path(
@@ -33,6 +27,6 @@ urlpatterns = [
         ),
         name="password_change_done",
     ),
-    path("<str:username>/", CustomUserDetailView.as_view(), name="users-profile"),
-    path("", UserDetailView.as_view(), name="user-profile"),
+    path("<str:username>/", views.ProfileDetailView.as_view(), name="users-profile"),
+    path("", views.ProfileDetailView.as_view(), name="user-profile"),
 ]

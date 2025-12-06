@@ -1,0 +1,12 @@
+{% extends 'base/base.html' %}
+{% block title %}
+ورود
+{% endblock title %}
+{% block content %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <p>ورود با <a href="{% url 'social:begin' 'github' %}">گیت هاب</a></p>
+    <button class="btn btn-success" type="submit">ورود</button>
+</form>
+{% endblock content %}

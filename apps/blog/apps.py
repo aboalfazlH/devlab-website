@@ -5,4 +5,4 @@ class BlogConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.blog"
     label = "blog"
-    verbose_name = "بلاگ"
+    verbose_name = "وبلاگ"

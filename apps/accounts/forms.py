@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import UserChangeForm, UserCreationForm
 from .models import CustomUser
+from django.contrib.auth import authenticate
+from django.db.models import Q
 
 
 class CustomUserCreationForm(UserCreationForm):
@@ -39,10 +41,13 @@ class CustomUserChangeForm(UserChangeForm):
 
 
 class LoginForm(forms.Form):
-    username = forms.CharField(
-        widget=forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"})
+    email = forms.CharField(
+        max_length=150,
+        widget=forms.TextInput(attrs={"placeholder": "نام کاربری یا ایمیل"}),
     )
-    password = forms.CharField(widget=forms.PasswordInput(attrs={"placeholder": "رمز"}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "رمز عبور"})
+    )
 
 
 class ProfileEditForm(forms.ModelForm):
@@ -60,5 +65,13 @@ class ProfileEditForm(forms.ModelForm):
             "about",
             "bio",
             "email",
+            "public_email",
+            "public_phone_number",
             "phone_number",
+            "git_account",
+            "website",
+            "facebook",
+            "linkedin",
+            "telegram",
+            "public_article",
         )

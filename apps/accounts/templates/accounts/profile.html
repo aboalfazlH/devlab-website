@@ -26,7 +26,13 @@
         <div>
             <h2 class="profile-name">{{ profile.full_name|default:profile.username }}</h2>
             <p class="profile-username">@{{ profile.username }}</p>
-
+            {% if profile.public_email %}
+            <p class="profile-email">{{ profile.public_email }}</p>
+            {% endif %}
+            {% if profile.public_phone_number %}
+            <p class="profile-phone-number">{{ profile.public_phone_number }}</p>
+            {% endif %}
+            <!-- TODO: Followers -->
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
                 <span class="badge bg-primary">دنبال کنندگان: {{ profile.followers|default:"0" }}</span>
@@ -44,7 +50,7 @@
     </section>
     {% else %}
     <section class="profile-section">
-        <p>{{ profile }} مرموز است و چیزی درباره خود ننوشته</p>
+        <p>{{ profile }} چیزی درباره خود ننوشته</p>
     </section>
     {% endif %}
 
@@ -79,13 +85,13 @@
 
         {% if profile.git_account %}
         <h6>گیت‌هاب / گیت‌لب</h6>
-        <a href="{{ profile.git_account }}" class="profile-link" target="_blank">
+        <a href="{{ profile.git_account }}" class="profile-link">
             {% if 'github' in profile.git_account %}
-            GitHub
+            گیت‌هاب
             {% elif 'gitlab' in profile.git_account %}
-            GitLab
+            گیت لب
             {% else %}
-            Git Account
+            حساب گیت
             {% endif %}
         </a>
         {% endif %}
@@ -115,12 +121,17 @@
         <a href="{{ profile.telegram }}" class="profile-link" target="_blank">{{ profile.telegram }}</a>
         {% endif %}
 
+        {% for link in links %}
+        <h6>{{ link.link_name }}</h6>
+        <a href="{{ link.link_url }}" class="profile-link" target="_blank">{{ link.link_url }}</a>
+        {% endfor %}
+
     </section>
     {% else %}
     <p>لینکی از {{ profile }} در دسترس نیست</p>
     {% endif %}
 
-    <!-- Tech Stack -->
+    <!-- TODO : Tech Stack -->
     <section class="profile-section profile-tech">
         <h5>تکنولوژی‌ها</h5>
         {% if profile.tech_stack %}
@@ -133,7 +144,7 @@
     </section>
 
     <!-- Actions -->
-    {% if profile == user %}
+    {% if profile == user or user.is_superuser %}
     <div class="mt-3">
         <a class="btn btn-warning" href="{% url 'password_change' %}">تغییر رمز</a>
         <a class="btn btn-primary" href="{% url 'users-profile-edit' %}">تغییر پروفایل</a>
