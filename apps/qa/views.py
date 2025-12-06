@@ -7,15 +7,16 @@ from django.views.generic import (
     DeleteView,
 )
 from django.contrib import messages
-from .models import Question, Answer
+from .models import Question, Answer, QLike, QDisLike
 from .forms import QuestionForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect, get_object_or_404
-from django.urls import reverse_lazy,reverse
+from django.urls import reverse_lazy, reverse
 
 
+# Question views
 class QuestionListView(ListView):
     model = Question
     template_name = "questions.html"
@@ -103,6 +104,37 @@ class QuestionDeleteView(DeleteView):
         return redirect(self.success_url)
 
 
+class QuestionLikeView(View):
+    def post(self, request, slug):
+        q = Question.objects.get(slug=slug)
+
+        QDisLike.objects.filter(user=request.user, question=q).delete()
+
+        like, created = QLike.objects.get_or_create(user=request.user, question=q)
+        if created:
+            messages.success(request, "نظر شما با موفقیت ثبت شد")
+        else:
+            messages.info(request, "شما قبلاً لایک داده‌اید")
+
+        return redirect("qa:questions")
+
+
+class QuestionDisLikeView(View):
+    def post(self, request, slug):
+        q = Question.objects.get(slug=slug)
+
+        QLike.objects.filter(user=request.user, question=q).delete()
+
+        dislike, created = QDisLike.objects.get_or_create(user=request.user, question=q)
+        if created:
+            messages.success(request, "نظر شما با موفقیت ثبت شد")
+        else:
+            messages.info(request, "شما قبلاً دیسلایک داده‌اید")
+
+        return redirect("qa:questions")
+
+
+# Answer views
 class AnswerCreateView(View):
     def post(self, request, slug):
         question = get_object_or_404(Question, slug=slug)
@@ -113,10 +145,8 @@ class AnswerCreateView(View):
             return redirect(question.get_absolute_url())
 
         Answer.objects.create(
-                question=question,
-                user=request.user,
-                answer_description=content
-            )
+            question=question, user=request.user, answer_description=content
+        )
 
         messages.success(request, "پاسخ شما ثبت شد.")
         return redirect(question.get_absolute_url())
@@ -145,15 +175,18 @@ class AnswerDeleteView(LoginRequiredMixin, View):
 
         return redirect("qa:question-detail", slug=slug)
 
+
 class AnswerBestView(LoginRequiredMixin, View):
     def post(self, request, slug, pk):
         question = Question.objects.get(slug=slug)
         answer = get_object_or_404(Answer, id=pk)
-        
-        if Answer.objects.filter(question=question,is_active=True,is_best=True).exists():
-            messages.error(request,"این سوال یک پاسخ به عنوان بهترین دارد")
-            return redirect("qa:question-detail", slug=slug)    
-        
+
+        if Answer.objects.filter(
+            question=question, is_active=True, is_best=True
+        ).exists():
+            messages.error(request, "این سوال یک پاسخ به عنوان بهترین دارد")
+            return redirect("qa:question-detail", slug=slug)
+
         if request.user == question.author or request.user.is_superuser:
             answer.is_best = not answer.is_best
             answer.save()
@@ -162,6 +195,8 @@ class AnswerBestView(LoginRequiredMixin, View):
             else:
                 messages.success(request, "پاسخ دیگر بهترین نیست.")
         else:
-            messages.error(request, "شما اجازه ندارید این پاسخ را به عنوان بهترین انتخاب کنید.")
+            messages.error(
+                request, "شما اجازه ندارید این پاسخ را به عنوان بهترین انتخاب کنید."
+            )
 
         return redirect("qa:question-detail", slug=slug)
