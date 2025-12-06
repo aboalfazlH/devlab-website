@@ -7,7 +7,7 @@ from django.views.generic import (
     DeleteView,
 )
 from django.contrib import messages
-from .models import Question, Answer, QLike, QDisLike
+from .models import Question, Answer, QLike, QDisLike,ALike,ADisLike
 from .forms import QuestionForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.timezone import now
@@ -200,3 +200,33 @@ class AnswerBestView(LoginRequiredMixin, View):
             )
 
         return redirect("qa:question-detail", slug=slug)
+
+
+class AnswerLikeView(View):
+    def post(self, request, pk, slug):
+        a = Answer.objects.get(pk=pk)
+
+        ADisLike.objects.filter(user=request.user, answer=a).delete()
+
+        like, created = ALike.objects.get_or_create(user=request.user, answer=a)
+        if created:
+            messages.success(request, "نظر شما با موفقیت ثبت شد")
+        else:
+            messages.info(request, "شما قبلاً لایک داده‌اید")
+
+        return redirect("qa:question-detail",slug=slug)
+
+
+class AnswerDisLikeView(View):
+    def post(self, request, pk,slug):
+        a = Answer.objects.get(pk=pk)
+
+        ALike.objects.filter(user=request.user, answer=a).delete()
+
+        dislike, created = ADisLike.objects.get_or_create(user=request.user, answer=a)
+        if created:
+            messages.success(request, "نظر شما با موفقیت ثبت شد")
+        else:
+            messages.info(request, "شما قبلاً دیسلایک داده‌اید")
+
+        return redirect("qa:question-detail",slug=slug)

@@ -94,16 +94,16 @@ class Answer(models.Model):
         )
 
     @property
-    def likes(self):
+    def likes_count(self):
         return self.stats["likes_count"]
 
     @property
-    def dis_likes(self):
+    def dislikes_count(self):
         return self.stats["dislikes_count"]
 
     @property
     def score(self):
-        return self.likes - self.dis_likes
+        return self.likes_count - self.dislikes_count
 
     class Meta:
         verbose_name = "پاسخ"

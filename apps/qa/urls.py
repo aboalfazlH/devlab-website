@@ -15,4 +15,6 @@ urlpatterns = [
     path("question/<slug:slug>/answer/<int:pk>/edit/",views.AnswerUpdateView.as_view(),name="answer-edit"),
     path("question/<slug:slug>/answer/<int:pk>/delete/",views.AnswerDeleteView.as_view(),name="answer-delete"),
     path("question/<slug:slug>/answer/<int:pk>/best/",views.AnswerBestView.as_view(),name="answer-best"),
+    path("question/<slug:slug>/answer/<int:pk>/like/",views.AnswerLikeView.as_view(),name="answer-like"),
+    path("question/<slug:slug>/answer/<int:pk>/dislike/",views.AnswerDisLikeView.as_view(),name="answer-dislike"),
 ]

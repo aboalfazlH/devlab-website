@@ -1,8 +1,13 @@
 {% extends 'base/base.html' %}
-
+{% load static %}
 {% block title %}
 {{ question }}
 {% endblock title %}
+
+{% block styles %}
+<link rel="stylesheet" href="{% static 'css/questions.css' %}">    
+{% endblock styles %}
+    
 {% block content %}
 <div class="container my-5">
     <div class="card shadow-sm p-4">
@@ -22,61 +27,68 @@
         {% if answers %}
         {% for answer in answers %}
         <div class="card my-4 p-4 shadow-sm rounded border-1">
-            <div class="d-flex">
-                <div class="text-center me-3 pe-2 border-end" style="width: 60px;">
-                    <button class="btn btn-sm btn-outline-secondary d-block mb-1">▲</button>
-                    <span class="d-block fw-bold" style="position: relative;left: 10px;">{{ answer.score }}</span>
-                    <button class="btn btn-sm btn-outline-secondary d-block mt-1">▼</button>
-                </div>
+            <div class="vote-box">
+                <form method="post" action="{% url 'qa:answer-like' question.slug answer.id %}" class="vote-btn">
+                    {% csrf_token %}
+                    <button type="submit" onclick="event.stopPropagation()" class="vote-action">▲</button>
+                </form>
 
-                <div class="flex-grow-1">
-                    <h6 class="fw-bold mb-2">
-                        {% if answer.is_best %}
-                        <span class="badge bg-success me-1">بهترین</span>
-                        {% endif %}
-                    </h6>
+                <div>{{ answer.score }}</div>
 
-                    <p class="mb-2">{{ answer.answer_description|safe }}</p>
+                <form method="post" action="{% url 'qa:answer-dislike' question.slug answer.id %}" class="vote-btn">
+                    {% csrf_token %}
+                    <button type="submit" onclick="event.stopPropagation()" class="vote-action">▼</button>
+                </form>
+            </div>
 
-                    <small class="text-muted d-block">
-                        {{ answer.write_date|date:"Y/m/d H:i" }} -
-                        <span class="fw-bold">{{ answer.user.username }}</span>
-                    </small>
 
-                    <div class="mt-3">
-                        <button class="btn btn-sm btn-outline-secondary me-1" style="display: inline;">گزارش</button>
-                        {% if user == answer.user %}
-                        <a href="{% url 'qa:answer-edit' question.slug answer.id %}" style="display: inline;"
-                            class="btn btn-sm btn-outline-info">ویرایش</a>
-                        <form method="post" action="{% url 'qa:answer-delete' question.slug answer.id %}">
-                            {% csrf_token %}
-                            <button style="display: inline;" type="submit"
-                                class="btn btn-sm btn-outline-danger">حذف</button>
-                        </form>
-                        {% endif %}
+            <div class="flex-grow-1">
+                <h6 class="fw-bold mb-2">
+                    {% if answer.is_best %}
+                    <span class="badge bg-success me-1">بهترین</span>
+                    {% endif %}
+                </h6>
 
-                        {% if user == question.author or user.is_superuser %}
-                        <form method="post" action="{% url 'qa:answer-best' question.slug answer.id %}">
-                            {% csrf_token %}
-                            <button style="display: inline;" type="submit"
-                                class="btn btn-sm btn-info">بهترین</button>
-                        </form>
-                        {% endif %}
-                    </div>
+                <p class="mb-2">{{ answer.answer_description|safe }}</p>
+
+                <small class="text-muted d-block">
+                    {{ answer.write_date|date:"Y/m/d H:i" }} -
+                    <span class="fw-bold">{{ answer.user.username }}</span>
+                </small>
+
+                <div class="mt-3">
+                    <button class="btn btn-sm btn-outline-secondary me-1" style="display: inline;">گزارش</button>
+                    {% if user == answer.user %}
+                    <a href="{% url 'qa:answer-edit' question.slug answer.id %}" style="display: inline;"
+                        class="btn btn-sm btn-outline-info">ویرایش</a>
+                    <form method="post" action="{% url 'qa:answer-delete' question.slug answer.id %}">
+                        {% csrf_token %}
+                        <button style="display: inline;" type="submit"
+                            class="btn btn-sm btn-outline-danger">حذف</button>
+                    </form>
+                    {% endif %}
+
+                    {% if user == question.author or user.is_superuser %}
+                    <form method="post" action="{% url 'qa:answer-best' question.slug answer.id %}">
+                        {% csrf_token %}
+                        <button style="display: inline;" type="submit" class="btn btn-sm btn-info">بهترین</button>
+                    </form>
+                    {% endif %}
                 </div>
             </div>
         </div>
-        {% endfor %}
-
-        {% else %}
-        <p class="text-muted mt-3">هنوز پاسخی ثبت نشده است.</p>
-        {% endif %}
-        <form action="{% url 'qa:answer-create' question.slug %}" method="post" class="mb-4">
-            {% csrf_token %}
-            <textarea class="summernote" name="content" rows="3" style="height: 100px;width: suto;" required></textarea>
-            <br>
-            <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
-        </form>
     </div>
+    {% endfor %}
+
+    {% else %}
+    <p class="text-muted mt-3">هنوز پاسخی ثبت نشده است.</p>
+    {% endif %}
+    <form action="{% url 'qa:answer-create' question.slug %}" method="post" class="mb-4">
+        {% csrf_token %}
+        <textarea class="summernote" name="content" rows="3" style="height: 100px;width: suto;" required></textarea>
+        <br>
+        <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
+    </form>
+</div>
 </div>
 {% endblock content %}
