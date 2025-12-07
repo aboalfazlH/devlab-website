@@ -33,17 +33,36 @@
             <p class="profile-phone-number">{{ profile.public_phone_number }}</p>
             {% endif %}
             <!-- TODO: Followers -->
+            {% comment %}
             {% if profile.followers or profile.following %}
             <div class="profile-badges">
                 <span class="badge bg-primary">دنبال کنندگان: {{ profile.followers|default:"0" }}</span>
                 <span class="badge bg-secondary">دنبال شوندگان: {{ profile.following|default:"0" }}</span>
             </div>
             {% endif %}
+            {% endcomment %}
         </div>
     </div>
 
     <!-- About -->
     <h5>درباره {{ profile }}</h5>
+
+    {% if profile.subscribe_status == "اشتراک فعال✅" %}
+    <span class="badge bg-warning">کاربر ویژه</span>
+    {% endif %}
+
+    {% if profile.is_staff %}
+    <span class="badge bg-primary">ناظر</span>
+    {% endif %}
+
+
+    {% for group in profile.groups.all %}
+    {% if group.name == "کارمندان" %}
+    <span class="badge bg-success">کارمند</span>
+    {% endif %}
+    {% endfor %}
+
+
     {% if profile.about %}
     <section class="profile-section">
         <p>{{ profile.about }}</p>
