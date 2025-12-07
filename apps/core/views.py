@@ -1,8 +1,9 @@
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,View
 from django.contrib import messages
 from django.shortcuts import render
 from apps.accounts.models import CustomUser
-
+from .models import Category
+from django.http import JsonResponse
 
 class MainPageView(TemplateView):
     template_name = "index.html"
@@ -19,3 +20,13 @@ class AboutPageView(TemplateView):
 
 class ContactPageView(TemplateView):
     template_name = "contact.html"
+
+
+class CategoryAutocomplete(View):
+    """Create select2  autocomplete"""
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("q", "")
+        queryset = Category.objects.filter(name__icontains=query)[:10]
+        results = [{"id": category.id, "text": category.name} for category in queryset]
+        return JsonResponse({"results": results})

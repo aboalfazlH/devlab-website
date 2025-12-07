@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Question, Answer
-
+from django_summernote.admin import SummernoteModelAdmin
 
 @admin.register(Question)
-class QuestionAdmin(admin.ModelAdmin):
+class QuestionAdmin(SummernoteModelAdmin):
     """Admin View for Question"""
 
     list_display = (
@@ -14,6 +14,7 @@ class QuestionAdmin(admin.ModelAdmin):
         "write_date",
         "solve_date",
     )
+    summernote_fields = ("question_description",)
     list_filter = (
         "is_active",
         "solved",
@@ -25,7 +26,7 @@ class QuestionAdmin(admin.ModelAdmin):
     search_fields = ("name", "question_description")
     date_hierarchy = "write_date"
     ordering = ("-write_date", "-solve_date")
-
+    autocomplete_fields = ("categories","author")
     fieldsets = (
         (
             None,
@@ -44,6 +45,7 @@ class QuestionAdmin(admin.ModelAdmin):
                     "is_active",
                     "solved",
                     "is_pin",
+                    "categories",
                 ),
             },
         ),
@@ -60,7 +62,7 @@ class QuestionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Answer)
-class AnswerAdmin(admin.ModelAdmin):
+class AnswerAdmin(SummernoteModelAdmin):
     """Admin View for Answer"""
 
     list_display = (
@@ -69,6 +71,7 @@ class AnswerAdmin(admin.ModelAdmin):
         "is_best",
         "write_date",
     )
+    summernote_fields = ("answer_description",)
     list_filter = (
         "is_active",
         "is_best",
@@ -87,8 +90,6 @@ class AnswerAdmin(admin.ModelAdmin):
                     "answer_description",
                     "is_active",
                     "is_best",
-                    "likes",
-                    "dis_likes",
                 )
             },
         ),

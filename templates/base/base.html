@@ -70,7 +70,7 @@
                 theme: 'default',
                 width: '100%',
                 ajax: {
-                    url: "{% url 'blog:categories-autocomplete' %}",
+                    url: "{% url 'core:categories-autocomplete' %}",
                     dataType: 'json',
                     delay: 250,
                     data: function (params) {
@@ -81,7 +81,7 @@
                     },
                     cache: true
                 },
-                minimumInputLength: 2
+                minimumInputLength: 3
             });
 
             $('.summernote').summernote({

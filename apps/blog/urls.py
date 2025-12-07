@@ -15,5 +15,4 @@ urlpatterns = [
     path("article/<slug:slug>/comment/write/", views.CommentCreateView.as_view(), name="comment-create"),
     path("article/<slug:slug>/comment/<int:comment_id>/delete/", views.CommentDeleteView.as_view(), name="comment-delete"),
     path("article/<slug:slug>/comment/<int:pk>/", views.CommentDetailView.as_view(), name="comment-detail"),
-    path("select2/categories/", views.CategoryAutocomplete.as_view(), name="categories-autocomplete"),
 ]
