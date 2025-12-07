@@ -4,19 +4,9 @@ from django.db.models import Count
 from django.utils import timezone
 from django.urls import reverse
 from apps.accounts.models import CustomUser
-from apps.core.models import BaseLike, BaseDisLike, BaseCategory
+from apps.core.models import BaseLike, BaseDisLike, Category
 
 
-class QuestionCategory(BaseCategory):
-    class Meta:
-        """Meta definition for Category."""
-
-        verbose_name = "برچسب"
-        verbose_name_plural = "برچسب ها"
-
-    def __str__(self):
-        """Unicode representation of Category."""
-        return f"{self.name}"
 
 
 def upload_to_question(instance, filename):
@@ -41,7 +31,7 @@ class Question(models.Model):
         CustomUser, on_delete=models.CASCADE, related_name="questions"
     )
 
-    categories = models.ManyToManyField(QuestionCategory)
+    categories = models.ManyToManyField(Category, related_name="questions", verbose_name="دسته‌بندی‌ها")
 
     @property
     def stats(self):

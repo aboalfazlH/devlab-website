@@ -5,26 +5,8 @@ from django.utils import timezone
 from unidecode import unidecode
 import re
 
-from apps.core.models import BaseCategory, BaseComment
+from apps.core.models import Category, BaseComment
 from apps.accounts.models import CustomUser
-
-
-# Article Category Model
-class ArticleCategory(BaseCategory):
-    """Model representing an article category."""
-
-    slug = models.SlugField(
-        verbose_name="شناسه",
-        unique=True,
-        help_text="Unique identifier for the category",
-    )
-
-    class Meta:
-        verbose_name = "برچسب"
-        verbose_name_plural = "برچسب ها"
-
-    def __str__(self):
-        return self.name
 
 
 class Article(models.Model):
@@ -68,7 +50,7 @@ class Article(models.Model):
     )
 
     categories = models.ManyToManyField(
-        ArticleCategory, related_name="articles", verbose_name="دسته‌بندی‌ها"
+        Category, related_name="articles", verbose_name="دسته‌بندی‌ها"
     )
 
     # Meta options

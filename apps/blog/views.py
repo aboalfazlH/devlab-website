@@ -14,8 +14,8 @@ from django.views.generic import (
     DeleteView,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
-
-from .models import Article, ArticleCategory, ArticleComment
+from apps.core.models import Category
+from .models import Article, ArticleComment
 from .forms import ArticleForm
 
 
@@ -34,7 +34,7 @@ class ArticleListView(ListView):
     def get_context_data(self, **kwargs):
         """query on articles and categories"""
         context = super().get_context_data(**kwargs)
-        context["categories"] = ArticleCategory.objects.annotate(
+        context["categories"] = Category.objects.annotate(
             article_count=Count("articles", filter=Q(articles__is_active=True))
         ).order_by("-article_count")
         return context
@@ -172,9 +172,9 @@ class ArticleFilterWithCategory(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["category"] = get_object_or_404(
-            ArticleCategory, slug=self.kwargs.get("category")
+            Category, slug=self.kwargs.get("category")
         )
-        context["categories"] = ArticleCategory.objects.annotate(
+        context["categories"] = Category.objects.annotate(
             article_count=Count("articles", filter=Q(articles__is_active=True))
         ).order_by("-article_count")
         return context
@@ -184,7 +184,7 @@ class CategoryAutocomplete(View):
     """Create select2  autocomplete"""
     def get(self, request, *args, **kwargs):
         query = request.GET.get("q", "")
-        queryset = ArticleCategory.objects.filter(name__icontains=query)[:10]
+        queryset = Category.objects.filter(name__icontains=query)[:10]
         results = [{"id": category.id, "text":category .name} for category in queryset]
         return JsonResponse({"results": results})
 

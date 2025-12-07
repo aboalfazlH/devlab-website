@@ -20,6 +20,7 @@ class BaseCategory(models.Model):
         return f"{self.name}"
 
 
+
 class BaseComment(models.Model):
     user = models.ForeignKey(
         "accounts.CustomUser", on_delete=models.CASCADE, verbose_name="کاربر"
@@ -91,3 +92,16 @@ class BaseDisLike(BaseLike):
     
     def __str__(self):
         return f"دیس لایک {self.user}"
+
+
+class Category(BaseCategory):
+    """Model definition for Category."""
+    class Meta:
+        """Meta definition for Category."""
+
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+
+    def __str__(self):
+        """Unicode representation of Category."""
+        return f"{self.name}"

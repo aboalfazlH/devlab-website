@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib import admin
-from .models import Article, ArticleCategory,ArticleComment
+from .models import Article, ArticleComment
 from django_summernote.admin import SummernoteModelAdmin
 
 
@@ -29,7 +29,10 @@ class ArticleAdmin(SummernoteModelAdmin):
         "delete_date",
         "verify_date",
     )
-    autocomplete_fields = ("author","categories",)
+    autocomplete_fields = (
+        "author",
+        "categories",
+    )
     readonly_fields = (
         "write_date",
         "update_date",
@@ -84,8 +87,8 @@ class ArticleAdmin(SummernoteModelAdmin):
             },
         ),
     )
-    
-    @admin.action(description='حذف نرم مقاله ')
+
+    @admin.action(description="حذف نرم مقاله ")
     def soft_delete(modeladmin, request, queryset):
         for obj in queryset:
             obj.soft_delete()
@@ -93,10 +96,8 @@ class ArticleAdmin(SummernoteModelAdmin):
         messages.success(request, f"حذف نرم {count} مقاله موفق بود")
 
     actions = [soft_delete]
-@admin.register(ArticleCategory)
-class ArticleCategoryAdmin(admin.ModelAdmin):
-    list_display = ("name",)
-    search_fields = ("name", "description")
+
+
 @admin.register(ArticleComment)
 class ArticleCommentAdmin(admin.ModelAdmin):
     list_display = ("id",)
