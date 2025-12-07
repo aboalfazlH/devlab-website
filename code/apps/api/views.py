@@ -30,7 +30,8 @@ class FrontFakeObjectsApi(APIView):
         return value, None
 
     def get(self, request):
-        fake = Faker("fa-IR")
+        lang = request.GET.get("lang") or "fa-IR"
+        fake = Faker(lang)
 
         articles, err_articles = self.validate_param(
             request.GET.get("articles"), "articles"
@@ -82,7 +83,7 @@ class DevelopLabGetArticlesApi(ListAPIView):
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        limit = int(self.kwargs.get("articles", 0)) + 1
+        limit = int(self.kwargs.get("count", 0)) + 1
         return Article.objects.filter(
             is_active=True, author__public_article=True
         ).order_by("-write_date")[:limit]
