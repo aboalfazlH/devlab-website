@@ -7,6 +7,18 @@ from apps.accounts.models import CustomUser
 from apps.core.models import BaseLike, BaseDisLike, BaseCategory
 
 
+class QuestionCategory(BaseCategory):
+    class Meta:
+        """Meta definition for Category."""
+
+        verbose_name = "برچسب"
+        verbose_name_plural = "برچسب ها"
+
+    def __str__(self):
+        """Unicode representation of Category."""
+        return f"{self.name}"
+
+
 def upload_to_question(instance, filename):
     now = timezone.now()
     return f"qa/questions/{now:%Y/%m/%d}/{filename}"
@@ -28,6 +40,8 @@ class Question(models.Model):
     author = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name="questions"
     )
+
+    categories = models.ManyToManyField(QuestionCategory)
 
     @property
     def stats(self):
@@ -181,17 +195,3 @@ class ADisLike(BaseDisLike):
 
     def __str__(self):
         return f"{self.user} disliked {self.answer}"
-
-
-class QuestionCategory(BaseCategory):
-    question = models.ForeignKey(Question,on_delete=models.CASCADE)
-
-    class Meta:
-        """Meta definition for Category."""
-
-        verbose_name = "برچسب"
-        verbose_name_plural = "برچسب ها"
-
-    def __str__(self):
-        """Unicode representation of Category."""
-        return f"{self.name}"

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Answer
+from .models import Question, Answer, QuestionCategory
 
 
 @admin.register(Question)
@@ -93,3 +93,6 @@ class AnswerAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+
+admin.site.register(QuestionCategory)
