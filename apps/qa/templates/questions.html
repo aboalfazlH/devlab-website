@@ -37,16 +37,13 @@
                 <!-- Question Info -->
                 <div class="flex-grow-1">
                     <h5><a href="{{ question.get_absolute_url }}">{{ question.name }}</a></h5>
-                    <p class="text-muted mb-1">پرسش توسط <strong>{{ question.author }}</strong> در {{
-                        question.write_date|date:"M d, Y" }}</p>
+                    <p class="text-muted mb-1">پرسش توسط <strong>{{ question.author }}</strong> در {{question.write_date|date:"M d, Y" }}</p>
                     <div class="mb-1">
                         {% for category in question.categories.all %}
                         <span style="background-color: {{ category.color }};" class="badge category-badge">{{ category.name }}</span>
                         {% endfor %}
                     </div> 
                     <div class="d-flex gap-2 flex-wrap">
-                        {% if question.is_active %}<span class="badge bg-success">فعال</span>{% else %}<span
-                            class="badge bg-secondary">غیرفعال</span>{% endif %}
                         {% if question.solved %}<span class="badge bg-success">حل شده</span>{% else %}<span
                             class="badge bg-warning text-dark">حل نشده</span>{% endif %}
                         {% if question.is_pin %}<span class="badge bg-info text-dark">ویژه</span>{% endif %}
