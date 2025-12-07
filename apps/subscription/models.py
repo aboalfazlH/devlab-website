@@ -1,5 +1,4 @@
 from django.db import models
-from apps.accounts.models import CustomUser
 from django.utils import timezone
 
 
@@ -28,7 +27,7 @@ class Subscription(models.Model):
         SubscriptionPlan, on_delete=models.CASCADE, verbose_name="پلن اشتراک"
     )
     subscription_user = models.ForeignKey(
-        CustomUser, on_delete=models.CASCADE, verbose_name="کاربر"
+        "accounts.CustomUser", on_delete=models.CASCADE, verbose_name="کاربر"
     )
     start_date = models.DateTimeField(auto_now_add=True, verbose_name="تاریخ شروع")
     end_date = models.DateTimeField(verbose_name="تاریخ پایان")

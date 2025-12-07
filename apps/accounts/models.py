@@ -1,6 +1,7 @@
 from apps.core.models import BaseLink
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import AbstractUser
+from apps.subscription.models import Subscription
 from django.template.defaultfilters import slugify
 from django.utils import timezone
 from django.db import models
@@ -120,6 +121,20 @@ class CustomUser(AbstractUser):
         ]
         return any(links)
 
+    @property
+    def subscribe_status(self):
+        now = timezone.now()
+        subs = Subscription.objects.filter(subscription_user=self).order_by("-end_date")
+
+        if not subs.exists():
+            return "بدون سابقه اشتراک❔"
+
+        latest = subs.first()
+        if latest.end_date > now:
+            return "اشتراک فعال✅"
+        else:
+            return "اشتراک منقضی شده❌"
+
     def get_absolute_url(self):
         """Get User Detail"""
         from django.urls import reverse
@@ -130,5 +145,3 @@ class CustomUser(AbstractUser):
         """Str for user model"""
         full_name = self.get_full_name().strip()
         return full_name if full_name else self.username
-
-

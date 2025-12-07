@@ -18,6 +18,7 @@ class CustomUserAdmin(SummernoteModelAdmin, UserAdmin):
         "is_active",
         "is_staff",
         "is_superuser",
+        "subscribe_status",
     )
 
     list_display_links = ("username",)
@@ -67,6 +68,7 @@ class CustomUserAdmin(SummernoteModelAdmin, UserAdmin):
                     "about",
                     "bio",
                     "avatar",
+                    "subscribe_status",
                 ),
             },
         ),
