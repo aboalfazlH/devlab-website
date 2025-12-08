@@ -19,8 +19,8 @@ from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExampl
     parameters=[
         OpenApiParameter(
             name="lang",
-            description="زبان تولید دیتا توسط Faker (پیش‌فرض: fa-IR)",
             required=False,
+            description="زبان تولید دیتا توسط Faker (پیش‌فرض: fa-IR)",
             type=str,
         ),
         OpenApiParameter(
@@ -159,9 +159,6 @@ class DevelopLabGetArticlesApi(ListAPIView):
         return Article.objects.filter(
             is_active=True, author__public_article=True
         ).order_by("-write_date")[:limit]
-
-
-from drf_spectacular.utils import extend_schema
 
 
 @extend_schema(

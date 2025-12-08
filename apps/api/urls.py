@@ -1,3 +1,4 @@
+from django.views.generic import TemplateView
 from django.urls import path
 from . import views
 
@@ -10,4 +11,5 @@ urlpatterns = [
     ),
     path("articles/", views.DevelopLabGetArticlesApi.as_view()),
     path("articles/<str:token>/write-article", views.WriteArticle.as_view()),
+    path("docs/", TemplateView.as_view(template_name="docs.html"), name="api_docs"),
 ]

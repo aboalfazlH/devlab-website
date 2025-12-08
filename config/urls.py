@@ -1,7 +1,6 @@
 from django.conf.urls.static import static
 from django.urls import path, include
 from django.contrib import admin
-from django.views.generic import TemplateView
 from django.conf import settings
 from drf_spectacular.views import (
     SpectacularAPIView,
@@ -27,11 +26,6 @@ local_urls = [
     path("api/", include("apps.api.urls")),
     path("question-answer/", include("apps.qa.urls")),
     path("", include("apps.core.urls")),
-    path(
-        "docs/",
-        TemplateView.as_view(template_name="docs.html"),
-        name="api_docs",
-    ),
 ]
 urlpatterns = django_urls + third_party_urls + local_urls
 
