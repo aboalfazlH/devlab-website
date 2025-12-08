@@ -69,7 +69,6 @@ class CustomUserAdmin(SummernoteModelAdmin, UserAdmin):
                     "about",
                     "bio",
                     "avatar",
-                    "subscribe_status",
                 ),
             },
         ),

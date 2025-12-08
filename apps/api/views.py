@@ -10,7 +10,66 @@ from apps.blog.models import Article
 from .permissions import HasValidApiToken
 from .serializers import ArticleSerializer, ArticleCreateSerializer
 
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample
 
+
+@extend_schema(
+    summary="ساخت داده‌های تست برای فرانت",
+    description="این API تعداد مشخصی کاربر و مقاله را به صورت تصادفی تولید می‌کند.",
+    parameters=[
+        OpenApiParameter(
+            name="lang",
+            required=False,
+            description="زبان تولید دیتا توسط Faker (پیش‌فرض: fa-IR)",
+            type=str,
+        ),
+        OpenApiParameter(
+            name="articles",
+            description="تعداد مقالات (0 تا 100)",
+            required=False,
+            type=int,
+        ),
+        OpenApiParameter(
+            name="users",
+            description="تعداد کاربران (0 تا 100)",
+            required=False,
+            type=int,
+        ),
+    ],
+    responses={
+        200: OpenApiExample(
+            "مثال خروجی موفق",
+            value={
+                "status": 200,
+                "description": "Created 3 articles and 2 users successfully",
+                "users": [
+                    {
+                        "username": "u_1",
+                        "email": "example@mail.com",
+                        "first_name": "Ali",
+                        "last_name": "Rezai",
+                        "online": True,
+                    }
+                ],
+                "articles": [
+                    {
+                        "title": "متن تستی",
+                        "description": "توضیحات...",
+                        "author": "Ali Reza",
+                        "write_date": "2025-01-01T12:00:00Z",
+                        "pin": False,
+                        "active": True,
+                        "verify": True,
+                    }
+                ],
+            },
+        ),
+        400: OpenApiExample(
+            "ورودی اشتباه",
+            value={"status": 400, "description": "articles must be positive"},
+        ),
+    },
+)
 class FrontFakeObjectsApi(APIView):
 
     def validate_param(self, value, name):
@@ -30,7 +89,8 @@ class FrontFakeObjectsApi(APIView):
         return value, None
 
     def get(self, request):
-        fake = Faker("fa-IR")
+        lang = request.GET.get("lang") or "fa-IR"
+        fake = Faker(lang)
 
         articles, err_articles = self.validate_param(
             request.GET.get("articles"), "articles"
@@ -77,17 +137,49 @@ class FrontFakeObjectsApi(APIView):
         return Response(data)
 
 
+@extend_schema(
+    summary="دریافت جدیدترین مقالات",
+    parameters=[
+        OpenApiParameter(
+            name="count",
+            location=OpenApiParameter.PATH,
+            description="تعداد مقالات مورد نیاز",
+            required=True,
+            type=int,
+        )
+    ],
+    responses=ArticleSerializer,
+)
 class DevelopLabGetArticlesApi(ListAPIView):
 
     serializer_class = ArticleSerializer
 
     def get_queryset(self):
-        limit = int(self.kwargs.get("articles", 0)) + 1
+        limit = int(self.kwargs.get("count", 0)) + 1
         return Article.objects.filter(
             is_active=True, author__public_article=True
         ).order_by("-write_date")[:limit]
 
 
+@extend_schema(
+    summary="نوشتن مقاله جدید",
+    description="ساخت مقاله با استفاده از توکن API.",
+    request=ArticleCreateSerializer,
+    responses={
+        200: OpenApiExample(
+            "مقاله با موفقیت ساخته شد",
+            value={
+                "status": 200,
+                "description": "Article 'Title' created successfully.",
+                "article_id": 12,
+            },
+        ),
+        400: OpenApiExample(
+            "خطای اعتبارسنجی",
+            value={"status": 400, "errors": {"title": ["This field is required."]}},
+        ),
+    },
+)
 class WriteArticle(APIView):
 
     permission_classes = [HasValidApiToken]

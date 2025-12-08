@@ -1,0 +1,133 @@
+openapi: 3.0.3
+
+
+paths:
+  /api/articles/:
+    get:
+      operationId: articles_list
+      summary: دریافت جدیدترین مقالات
+      parameters:
+        - in: query
+          name: count
+          schema:
+            type: integer
+          description: تعداد مقالات مورد نیاز
+          required: false
+      tags:
+        - articles
+      responses:
+        '200':
+          description: لیست مقالات
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+
+  /api/articles/{token}/write-article:
+    post:
+      operationId: articles_write_article_create
+      summary: نوشتن مقاله جدید
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+      tags:
+        - articles
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCreateRequest'
+      responses:
+        '200':
+          description: ایجاد موفق
+        '400':
+          description: خطای ورودی
+
+  /api/json-placeholder/:
+    get:
+      operationId: json_placeholder_retrieve
+      summary: ساخت داده‌های تست برای فرانت
+      parameters:
+        - in: query
+          name: articles
+          schema:
+            type: integer
+          description: تعداد مقالات (0 تا 100)
+        - in: query
+          name: lang
+          schema:
+            type: string
+          description: زبان تولید دیتا
+        - in: query
+          name: users
+          schema:
+            type: integer
+          description: تعداد کاربران (0 تا 100)
+      tags:
+        - json-placeholder
+      responses:
+        '200':
+          description: داده ایجاد شد
+        '400':
+          description: ورودی اشتباه
+
+components:
+  schemas:
+    Article:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        description:
+          type: string
+        views:
+          type: integer
+        author:
+          type: string
+        write_date:
+          type: string
+          format: date-time
+        is_pin:
+          type: boolean
+        is_active:
+          type: boolean
+        categories:
+          type: string
+
+    ArticleCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        slug:
+          type: string
+        thumbnail:
+          type: string
+          format: binary
+          nullable: true
+        categories:
+          type: array
+          items:
+            type: integer
+        is_pin:
+          type: boolean
+        is_active:
+          type: boolean
+      required:
+        - title
+        - slug
+        - categories
