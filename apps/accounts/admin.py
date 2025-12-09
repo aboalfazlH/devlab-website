@@ -110,4 +110,11 @@ class CustomUserAdmin(SummernoteModelAdmin, UserAdmin):
     actions = user_actions
 
 
-admin.site.register(ProfileLink)
+@admin.register(ProfileLink)
+class ProfileLinkAdmin(admin.ModelAdmin):
+    '''Admin View for ProfileLink'''
+
+    list_display = ('link_type','link_name','link_url','user')
+    list_filter = ('user','link_type')
+    autocomplete_fields = ('user','link_type')
+    search_fields = ('link_name','link_url','link_type__name')

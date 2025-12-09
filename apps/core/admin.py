@@ -7,7 +7,7 @@ class LinkModelAdmin(admin.ModelAdmin):
     """Admin View for LinkModel"""
 
     list_display = ("name",)
-
+    search_fields = ("name",)
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
