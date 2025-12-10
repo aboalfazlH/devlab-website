@@ -5,35 +5,9 @@ from django_summernote.admin import SummernoteModelAdmin
 from django import forms
 
 
-class ArticleForm(forms.ModelForm):
-
-    class Meta:
-        model = Article
-        fields = "__all__"
-        widgets = {
-            "description": forms.Textarea(attrs={"class": "markdown-editor"}),
-        }
-
-
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     """Admin View for Article"""
-
-    form = ArticleForm
-
-class Media:
-    css = {
-        "all": (
-            "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css",
-            "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css",
-            "https://cdn.jsdelivr.net/npm/highlight.js/styles/github.min.css",
-        )
-    }
-    js = (
-        "https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js",
-        "https://cdn.jsdelivr.net/npm/highlight.js/lib/common.js",
-        "/static/js/markdown-editor.js",
-    )
 
     list_display = (
         "title",
