@@ -56,8 +56,6 @@ class ProfileEditForm(forms.ModelForm):
     """Form definition for ProfileEdit."""
 
     class Meta:
-        """Meta definition for ProfileEditForm."""
-
         model = CustomUser
         fields = (
             "first_name",
@@ -66,14 +64,30 @@ class ProfileEditForm(forms.ModelForm):
             "avatar",
             "about",
             "bio",
-            "email",
             "public_email",
             "public_phone_number",
-            "phone_number",
-            "git_account",
             "website",
             "facebook",
             "linkedin",
             "telegram",
             "public_article",
         )
+        widgets = {
+            "bio": forms.Textarea(
+                attrs={
+                    "class": "quill-editor",  # برای Quill
+                    "style": "display:none;",
+                }
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            if field_name == "public_article":
+                field.label = "عمومی بودن مقالات (نشان داده شدن در API)"
+            else:
+                field.label = ""
+            if field.widget.__class__.__name__ not in ["CheckboxInput", "ClearableFileInput"]:
+                existing_classes = field.widget.attrs.get("class", "")
+                field.widget.attrs["class"] = (existing_classes + " form-control").strip()

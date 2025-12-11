@@ -1,18 +1,87 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block title %}
-تغییر مقاله
-{% endblock title %}
+
+{% block title %}تغییر {{ article }}{% endblock %}
 
 {% block styles %}
 <link rel="stylesheet" href="{% static 'css/article-create.css' %}">
-{% endblock styles %}
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+
+<style>
+  .quill-wrapper {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .ql-editor {
+    direction: rtl;
+    text-align: right;
+  }
+
+  .ql-editor pre,
+  .ql-editor code,
+  .ql-syntax {
+    direction: ltr !important;
+    text-align: left !important;
+    unicode-bidi: plaintext !important;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<h2 class="title">تغییر دادن {{ article }}</h2>
-<form action="" class="article-form" method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit" class="btn btn-success">ثبت تغییرات</button>
+<h2 class="title">{{ article }} رو تغییر بده</h2>
+
+<form action="" method="post" enctype="multipart/form-data" class="article-form">
+  {% csrf_token %}
+
+  {{ form.title }}
+  {{ form.slug }}
+  {{ form.thumbnail }}
+  {{ form.short_description }}
+  {{ form.description }}
+  <div class="quill-wrapper">
+    <div id="editor" style="min-height:250px;"></div>
+  </div>
+  {{ form.categories }}
+
+
+  <button type="submit" class="btn btn-success">ثبت مقاله</button>
 </form>
-{% endblock content %}
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const textarea = document.querySelector(".quill-editor");
+  const editorDiv = document.getElementById("editor");
+
+  textarea.style.display = "none";
+
+  const quill = new Quill(editorDiv, {
+    theme: "snow",
+    modules: {
+      toolbar: [
+        [{ header: [1, 2, 3, 4, 5, false] }],
+        ["bold", "italic", "underline", "strike"],
+        [{ list: "ordered" }, { list: "bullet" }],
+        [{ indent: "-1" }, { indent: "+1" }],
+        [{ align: [] }],
+        ["blockquote", "code-block"],
+        ["link", "image", "video"],
+        ["clean"]
+      ]
+    }
+  });
+
+  // Load initial value
+  quill.root.innerHTML = textarea.value;
+
+  // Sync on change
+  quill.on("text-change", () => {
+    textarea.value = quill.root.innerHTML;
+  });
+});
+</script>
+{% endblock %}

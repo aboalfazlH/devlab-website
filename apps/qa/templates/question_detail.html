@@ -1,94 +1,118 @@
 {% extends 'base/base.html' %}
 {% load static %}
-{% block title %}
-{{ question }}
-{% endblock title %}
+
+{% block title %}{{ question.name }}{% endblock title %}
 
 {% block styles %}
-<link rel="stylesheet" href="{% static 'css/questions.css' %}">    
+<link rel="stylesheet" href="{% static 'css/questions.css' %}">
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
+<style>
+.ql-editor { direction: rtl; text-align: right; min-height: 100px; }
+.ql-editor pre, .ql-editor code, .ql-syntax { direction: ltr; text-align: left; }
+</style>
 {% endblock styles %}
-    
+
 {% block content %}
 <div class="container my-5">
     <div class="card shadow-sm p-4">
         <h2 class="mb-3">{{ question.name }}</h2>
-
         {% if question.help_image %}
         <img src="{{ question.help_image.url }}" class="img-fluid rounded mb-3">
         {% endif %}
-
-        <p class="mb-4">{{ question.question_description|safe }}</p>
+        <div class="mb-4">{% autoescape off %}{{ question.question_description }}{% endautoescape %}</div>
 
         <div class="d-flex justify-content-between text-muted mb-3">
             <small>نویسنده: {{ question.author.username }}</small>
             <small>{{ question.write_date|date:"Y/m/d H:i" }}</small>
         </div>
+
         <h4 class="mt-4">پاسخ‌ها</h4>
         {% if answers %}
-        {% for answer in answers %}
-        <div class="card my-4 p-4 shadow-sm rounded border-1">
-            <div class="vote-box">
-                <form method="post" action="{% url 'qa:answer-like' question.slug answer.id %}" class="vote-btn">
-                    {% csrf_token %}
-                    <button type="submit" onclick="event.stopPropagation()" class="vote-action">▲</button>
-                </form>
-
-                <div>{{ answer.score }}</div>
-
-                <form method="post" action="{% url 'qa:answer-dislike' question.slug answer.id %}" class="vote-btn">
-                    {% csrf_token %}
-                    <button type="submit" onclick="event.stopPropagation()" class="vote-action">▼</button>
-                </form>
-            </div>
-
-
-            <div class="flex-grow-1">
-                <h6 class="fw-bold mb-2">
-                    {% if answer.is_best %}
-                    <span class="badge bg-success me-1">بهترین</span>
-                    {% endif %}
-                </h6>
-
-                <p class="mb-2">{{ answer.answer_description|safe }}</p>
-
-                <small class="text-muted d-block">
-                    {{ answer.write_date|date:"Y/m/d H:i" }} -
-                    <span class="fw-bold">{{ answer.user.username }}</span>
-                </small>
-
-                <div class="mt-3">
-                    <button class="btn btn-sm btn-outline-secondary me-1" style="display: inline;">گزارش</button>
-                    {% if user == answer.user %}
-                    <a href="{% url 'qa:answer-edit' question.slug answer.id %}" style="display: inline;"
-                        class="btn btn-sm btn-outline-info">ویرایش</a>
-                    <form method="post" action="{% url 'qa:answer-delete' question.slug answer.id %}">
+            {% for answer in answers %}
+            <div class="card my-4 p-4 shadow-sm rounded border-1">
+                <div class="vote-box">
+                    <form method="post" action="{% url 'qa:answer-like' question.slug answer.id %}" class="vote-btn">
                         {% csrf_token %}
-                        <button style="display: inline;" type="submit"
-                            class="btn btn-sm btn-outline-danger">حذف</button>
+                        <button type="submit" onclick="event.stopPropagation()" class="vote-action">▲</button>
                     </form>
-                    {% endif %}
-
-                    {% if user == question.author or user.is_superuser %}
-                    <form method="post" action="{% url 'qa:answer-best' question.slug answer.id %}">
+                    <div>{{ answer.score }}</div>
+                    <form method="post" action="{% url 'qa:answer-dislike' question.slug answer.id %}" class="vote-btn">
                         {% csrf_token %}
-                        <button style="display: inline;" type="submit" class="btn btn-sm btn-info">بهترین</button>
+                        <button type="submit" onclick="event.stopPropagation()" class="vote-action">▼</button>
                     </form>
-                    {% endif %}
+                </div>
+
+                <div class="flex-grow-1">
+                    <h6 class="fw-bold mb-2">
+                        {% if answer.is_best %}<span class="badge bg-success me-1">بهترین</span>{% endif %}
+                    </h6>
+                    <div>{% autoescape off %}{{ answer.answer_description }}{% endautoescape %}</div>
+                    <small class="text-muted d-block">{{ answer.write_date|date:"Y/m/d H:i" }} - <span class="fw-bold">{{ answer.user.username }}</span></small>
+
+                    <div class="mt-3">
+                        <button class="btn btn-sm btn-outline-secondary me-1">گزارش</button>
+                        {% if user == answer.user %}
+                        <a href="{% url 'qa:answer-edit' question.slug answer.id %}" class="btn btn-sm btn-outline-info me-1">ویرایش</a>
+                        <form method="post" action="{% url 'qa:answer-delete' question.slug answer.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-outline-danger">حذف</button>
+                        </form>
+                        {% endif %}
+                        {% if user == question.author or user.is_superuser %}
+                        <form method="post" action="{% url 'qa:answer-best' question.slug answer.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-sm btn-info">بهترین</button>
+                        </form>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    {% endfor %}
+            {% endfor %}
+        {% else %}
+            <p class="text-muted mt-3">هنوز پاسخی ثبت نشده است.</p>
+        {% endif %}
 
-    {% else %}
-    <p class="text-muted mt-3">هنوز پاسخی ثبت نشده است.</p>
-    {% endif %}
-    <form action="{% url 'qa:answer-create' question.slug %}" method="post" class="mb-4">
-        {% csrf_token %}
-        <textarea class="summernote" name="content" rows="3" style="height: 100px;width: suto;" required></textarea>
-        <br>
-        <button type="submit" class="btn btn-primary btn-sm">ارسال پاسخ</button>
-    </form>
-</div>
+        <form action="{% url 'qa:answer-create' question.slug %}" method="post" class="mb-4">
+            {% csrf_token %}
+            <label for="answer_new">پاسخ جدید</label>
+            <textarea id="answer_new" name="answer_description" class="quill-editor" rows="3"></textarea>
+            <div id="editor-answer-new" style="min-height: 150px;"></div>
+            <button type="submit" class="btn btn-primary btn-sm mt-2">ارسال پاسخ</button>
+        </form>
+    </div>
 </div>
 {% endblock content %}
+
+{% block scripts %}
+<script src="https://cdn.quilljs.com/1.3.7/quill.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const textareas = document.querySelectorAll(".quill-editor");
+    textareas.forEach((textarea, idx) => {
+        const editorDiv = document.createElement("div");
+        editorDiv.id = `editor-${idx}`;
+        editorDiv.style.minHeight = "150px";
+        textarea.parentNode.insertBefore(editorDiv, textarea.nextSibling);
+        textarea.style.display = "none";
+
+        const quill = new Quill(editorDiv, {
+            theme: "snow",
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ["bold","italic","underline","strike"],
+                    [{ list: "ordered" }, { list: "bullet" }],
+                    [{ align: [] }],
+                    ["blockquote","code-block"],
+                    ["link","image","video"],
+                    ["clean"]
+                ]
+            }
+        });
+
+        quill.root.innerHTML = textarea.value || '';
+        quill.on("text-change", () => { textarea.value = quill.root.innerHTML; });
+    });
+});
+</script>
+{% endblock scripts %}
