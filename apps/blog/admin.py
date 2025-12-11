@@ -1,14 +1,28 @@
 from django.contrib import messages
 from django.contrib import admin
 from .models import Article, ArticleComment
-from django_summernote.admin import SummernoteModelAdmin
 from django import forms
+
+
+class ArticleForm(forms.ModelForm):
+    class Meta:
+        model = Article
+        fields = "__all__"
+        widgets = {
+            "description": forms.Textarea(
+                attrs={
+                    "class": "quill-editor",
+                    "style": "display:none;",
+                }
+            ),
+        }
 
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
     """Admin View for Article"""
 
+    form = ArticleForm
     list_display = (
         "title",
         "is_active",
@@ -89,6 +103,7 @@ class ArticleAdmin(admin.ModelAdmin):
         ),
     )
 
+
     @admin.action(description="حذف نرم مقاله ")
     def soft_delete(modeladmin, request, queryset):
         for obj in queryset:
@@ -96,7 +111,10 @@ class ArticleAdmin(admin.ModelAdmin):
         count = len(queryset)
         messages.success(request, f"حذف نرم {count} مقاله موفق بود")
 
-    actions = [soft_delete]
+    actions = ["soft_delete",]
+    
+    class Media:
+        js = ("static/js/quill-init.js",)
 
 
 @admin.register(ArticleComment)
