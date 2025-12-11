@@ -1,31 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% load static %}
 {% block extrahead %}
-<style>
-    .quill-wrapper {
-        width: 100%;
-        display: block !important;
-    }
-
-    .ql-editor {
-        direction: rtl;
-        text-align: right;
-    }
-
-    .ql-editor pre,
-    .ql-editor code,
-    .ql-syntax {
-        direction: ltr !important;
-        text-align: left !important;
-        unicode-bidi: plaintext !important;
-    }
-
-    .ql-editor pre.ql-syntax {
-        padding: 10px;
-        white-space: pre;
-        overflow-x: auto;
-    }
-</style>
 {{ block.super }}
 <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 {% endblock %}

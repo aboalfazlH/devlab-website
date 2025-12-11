@@ -1,7 +1,5 @@
 from django import forms
 from .models import Article
-from django_summernote.widgets import SummernoteWidget
-
 class ArticleForm(forms.ModelForm):
     class Meta:
         model = Article
@@ -24,7 +22,10 @@ class ArticleForm(forms.ModelForm):
                 attrs={"class":"article-short-description","placeholder":"خلاصه"}
             ),
             "description": forms.Textarea(
-                attrs={"class": "summernote"}
+                attrs={
+                    "class": "quill-editor",
+                    "style": "display:none;",
+                }
             ),
             "categories": forms.SelectMultiple(
                 attrs={"class": "django-select2"}

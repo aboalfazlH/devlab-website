@@ -4,7 +4,7 @@ from .models import Article, ArticleComment
 from django import forms
 
 
-class ArticleForm(forms.ModelForm):
+class ArticleAdminForm(forms.ModelForm):
     class Meta:
         model = Article
         fields = "__all__"
@@ -22,7 +22,7 @@ class ArticleForm(forms.ModelForm):
 class ArticleAdmin(admin.ModelAdmin):
     """Admin View for Article"""
 
-    form = ArticleForm
+    form = ArticleAdminForm
     list_display = (
         "title",
         "is_active",
