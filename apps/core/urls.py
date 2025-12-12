@@ -9,4 +9,5 @@ urlpatterns = [
     path("about-us/", views.AboutPageView.as_view(), name="about-us-page"),
     path("contact-us/", views.ContactPageView.as_view(), name="contact-us-page"),
     path("select2/categories/", views.CategoryAutocomplete.as_view(), name="categories-autocomplete"),
+    path("search/", views.SearchView.as_view(), name="global-search"),
 ]

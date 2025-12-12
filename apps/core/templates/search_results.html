@@ -1,0 +1,40 @@
+{% extends 'base/base.html' %}
+
+{% block title %}
+صفحه عنوان
+{% endblock title %}
+{% block meta %}
+{% endblock meta %}
+{% block styles %}
+{% endblock styles %}
+{% block content %}
+{% if query %}
+
+<h2>مقالات:</h2>
+<ul>
+{% for article in results.articles %}
+    <a href="{{ article.get_absolute_url }}"><li>{{ article.title }}</li></a>
+{% empty %}
+    <li>هیچ مقاله‌ای پیدا نشد.</li>
+{% endfor %}
+</ul>
+<h2>کاربران:</h2>
+<ul>
+{% for user in results.users %}
+    <a href="{{ user.get_absolute_url }}"><li>{{ user }}</li></a>
+{% empty %}
+    <li>هیچ کاربری پیدا نشد.</li>
+{% endfor %}
+</ul>
+<h2>سوال ها:</h2>
+<ul>
+{% for question in results.question %}
+    <a href="{{ question.get_absolute_url }}"><li>{{ question.name }}</li></a>
+{% empty %}
+    <li>هیچ سوالی پیدا نشد.</li>
+{% endfor %}
+</ul>
+{% else %}
+<h1>چی سرچ کردی؟</h1>
+{% endif %}
+{% endblock content %}

@@ -1,9 +1,12 @@
 from django.views.generic import TemplateView,View
-from django.contrib import messages
-from django.shortcuts import render
 from apps.accounts.models import CustomUser
 from .models import Category
 from django.http import JsonResponse
+from django.db.models import Q
+from apps.blog.models import Article
+from apps.qa.models import Question
+from django.shortcuts import render
+
 
 class MainPageView(TemplateView):
     template_name = "index.html"
@@ -30,3 +33,35 @@ class CategoryAutocomplete(View):
         queryset = Category.objects.filter(name__icontains=query)[:10]
         results = [{"id": category.id, "text": category.name} for category in queryset]
         return JsonResponse({"results": results})
+
+
+class SearchView(View):
+    template_name = "search_results.html"
+
+    def get(self, request, *args, **kwargs):
+        query = request.GET.get("q", "")
+        results = {}
+
+        if query:
+            results["articles"] = Article.objects.filter (
+                Q(title__icontains=query) 
+                | Q(description__icontains=query)
+                | Q(short_description__icontains=query)
+                | Q(slug__icontains=query)
+            )
+            results["questions"] = Question.objects.filter (
+                Q(name__icontains=query) 
+                | Q(question_description__icontains=query)
+            )
+            results["users"] = CustomUser.objects.filter (
+                Q(username__icontains=query) 
+                | Q(first_name__icontains=query)
+                | Q(last_name__icontains=query)
+                | Q(about__icontains=query)
+                | Q(bio__icontains=query)
+            )
+
+        return render(request, self.template_name, {"results": results, "query": query})
+
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
