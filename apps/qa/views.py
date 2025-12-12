@@ -135,10 +135,10 @@ class QuestionDisLikeView(View):
 
 
 # Answer views
-class AnswerCreateView(View):
+class AnswerCreateView(LoginRequiredMixin,View):
     def post(self, request, slug):
         question = get_object_or_404(Question, slug=slug)
-        content = request.POST.get("content")
+        content = request.POST.get("answer_description")
 
         if not content:
             messages.error(request, "متن پاسخ نباید خالی باشد.")

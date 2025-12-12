@@ -92,6 +92,7 @@ class AnswerAdmin(admin.ModelAdmin):
                     "answer_description",
                     "is_active",
                     "is_best",
+                    "user"
                 )
             },
         ),

@@ -4,7 +4,7 @@ from django.http import HttpResponseForbidden, JsonResponse
 from django.contrib import messages
 from django.utils.timezone import now
 from django.db.models import Count, Q
-
+from apps.accounts.models import CustomUser
 from django.views import View
 from django.views.generic import (
     ListView,
@@ -37,6 +37,14 @@ class ArticleListView(ListView):
         context["categories"] = Category.objects.annotate(
             article_count=Count("articles", filter=Q(articles__is_active=True))
         ).order_by("-article_count")
+
+        context["authors"] = (
+            CustomUser.objects.annotate(
+                article_count=Count("article", filter=Q(article__is_active=True))
+            )
+            .filter(article_count__gt=0)
+            .order_by("-article_count")
+        )
         return context
 
 
