@@ -6,7 +6,6 @@ app_name = "blog"
 
 urlpatterns = [
     path("article/", views.ArticleListView.as_view(), name="articles"),
-    path("article/filter/<slug:category>/", views.ArticleFilterWithCategory.as_view(), name="article-list-category"),
     path("article/write/", views.ArticleCreateView.as_view(), name="write-article"),
     path("article/<slug:slug>/", views.ArticleDetailView.as_view(), name="article-detail"),
     path("article/<slug:slug>/edit/", views.ArticleUpdateView.as_view(), name="article-update"),

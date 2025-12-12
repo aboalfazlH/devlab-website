@@ -29,24 +29,30 @@ class ArticleListView(ListView):
     ordering = "-write_date"
 
     def get_queryset(self):
-        return Article.objects.filter(is_active=True).order_by("-is_pin", "-write_date")
+        queryset = Article.objects.filter(is_active=True)
+
+        category_slugs = self.request.GET.getlist('category')
+        if category_slugs:
+            queryset = queryset.filter(categories__slug__in=category_slugs)
+
+        author_usernames = self.request.GET.getlist('author')
+        if author_usernames:
+            queryset = queryset.filter(author__username__in=author_usernames)
+        return queryset.order_by("-is_pin", "-write_date")
 
     def get_context_data(self, **kwargs):
-        """query on articles and categories"""
+        """query on articles, categories, and authors"""
         context = super().get_context_data(**kwargs)
+
         context["categories"] = Category.objects.annotate(
             article_count=Count("articles", filter=Q(articles__is_active=True))
         ).order_by("-article_count")
 
-        context["authors"] = (
-            CustomUser.objects.annotate(
-                article_count=Count("article", filter=Q(article__is_active=True))
-            )
-            .filter(article_count__gt=0)
-            .order_by("-article_count")
-        )
-        return context
+        context["authors"] = CustomUser.objects.annotate(
+            article_count=Count("article", filter=Q(article__is_active=True))
+        ).filter(article_count__gt=0).order_by("-article_count")
 
+        return context
 
 class ArticleCreateView(LoginRequiredMixin, CreateView):
     model = Article
@@ -186,15 +192,6 @@ class ArticleFilterWithCategory(ListView):
             article_count=Count("articles", filter=Q(articles__is_active=True))
         ).order_by("-article_count")
         return context
-
-
-class CategoryAutocomplete(View):
-    """Create select2  autocomplete"""
-    def get(self, request, *args, **kwargs):
-        query = request.GET.get("q", "")
-        queryset = Category.objects.filter(name__icontains=query)[:10]
-        results = [{"id": category.id, "text":category .name} for category in queryset]
-        return JsonResponse({"results": results})
 
 
 class CommentDetailView(DetailView):

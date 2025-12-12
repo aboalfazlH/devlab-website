@@ -1,12 +1,19 @@
 {% extends 'base/base.html' %}
 {% load static %}
+
 {% block title %}
 لیست مقالات
-{%endblock title %} {% block meta %}
+{% endblock title %}
+
+{% block meta %}
 <meta name="description" content="لیست مقالات وبسایت" />
-{% endblock meta %} {% block styles %}
+{% endblock meta %}
+
+{% block styles %}
 <link rel="stylesheet" href="{% static 'css/article-list.css' %}" />
-{% endblock styles %} {% block content %}
+{% endblock styles %}
+
+{% block content %}
 <div class="container mt-4">
   <div class="row">
     <div class="col-lg-9 col-md-8">
@@ -18,12 +25,11 @@
         </h1>
         <a class="btn btn-primary" href="{% url 'blog:write-article' %}">نوشتن مقاله جدید</a>
       </div>
-
-      {% if category %}
+       {% if request.GET.category or request.GET.author %}
       <a href="{% url 'blog:articles' %}" class="btn btn-outline-secondary btn-sm mt-2">حذف فیلتر</a>
       {% endif %}
-
       <hr />
+
       {% for article in articles %}
       <div class="article-card {% if article.is_pin or article.most_visited %}pin{% endif %}"
         onclick="window.location='{{ article.get_absolute_url }}';">
@@ -32,7 +38,6 @@
         {% else %}
         <div class="thumbnail-placeholder">بدون تصویر</div>
         {% endif %}
-
         <div>
           <h3 class="article-title">{{ article.title }}</h3>
           {% if article.short_description %}
@@ -44,46 +49,66 @@
 
           <p class="author-box">
             نویسنده: {{ article.author }}
-            <span class="text-muted">
-              | {{ article.write_date|timesince }} قبل</span>
+            <span class="text-muted"> | {{ article.write_date|timesince }} قبل</span>
             <span class="text-muted"> | {{ article.views }} بازدید</span>
           </p>
 
           {% if article.is_pin %}
           <span class="badge bg-warning text-dark">ویژه</span>
-          {% endif %} {% if article.most_visited %}
+          {% endif %}
+          {% if article.most_visited %}
           <span class="badge bg-danger text-dark">پربازدید</span>
-          {% endif %} {% for category in article.categories.all %}
+          {% endif %}
+          {% for category in article.categories.all %}
           <span style="background-color:{{ category.color }};" class="badge">{{ category }}</span>
-          {% empty %} {% endfor %}
+          {% empty %}
+          {% endfor %}
         </div>
       </div>
       {% empty %}
       <div class="alert alert-warning text-center">هیچ مقاله‌ای یافت نشد.</div>
-      {% endfor %} {% include 'components/pagination.html' %}
+      {% endfor %}
+      
+      {% include 'components/pagination.html' %}
     </div>
 
     <div class="col-lg-3 col-md-4">
       <div class="sidebar-box">
-
         <h5 class="mb-3">دسته‌بندی‌ها</h5>
         {% for category in categories %}
-        <a href="{% url 'blog:article-list-category' category.slug %}" class="d-block mb-2 badge bg-light text-dark"
-          style="font-size: 0.9rem; border: 1px solid #ccc">
+        <a href="#" class="d-block mb-2 badge bg-light text-dark" style="font-size: 0.9rem; border: 1px solid #ccc"
+          onclick="addFilterToUrl('category', '{{ category.slug }}')">
           {{ category.name }} ({{ category.article_count }})
         </a>
         {% endfor %}
 
         <h5 class="mb-3 mt-4">نویسندگان</h5>
         {% for author in authors %}
-        <a href="#" class="d-block mb-2 badge bg-light text-dark" style="font-size: 0.9rem; border: 1px solid #ccc">
-          {{ author }} ({{ author.article_count }})
+        <a href="#" class="d-block mb-2 badge bg-light text-dark" style="font-size: 0.9rem; border: 1px solid #ccc"
+          onclick="addFilterToUrl('author', '{{ author.username }}')">
+          {{ author.username }} ({{ author.article_count }})
         </a>
         {% endfor %}
-
       </div>
     </div>
-
   </div>
 </div>
+
 {% endblock content %}
+
+{% block scripts %}
+<script>
+  function addFilterToUrl(filterType, filterValue) {
+    let url = new URL(window.location.href);
+    let params = new URLSearchParams(url.search);
+    let currentFilterValues = params.getAll(filterType);
+    currentFilterValues.push(filterValue);
+    params.delete(filterType);
+    currentFilterValues.forEach(value => {
+      params.append(filterType, value);
+    });
+    url.search = params.toString();
+    window.location.href = url.toString();
+  }
+</script>
+{% endblock %}
