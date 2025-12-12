@@ -5,12 +5,18 @@ from django.http import JsonResponse
 from django.db.models import Q
 from apps.blog.models import Article
 from apps.qa.models import Question
+from apps.pricing.models import SubscriptionPlan
 from django.shortcuts import render
 
 
 class MainPageView(TemplateView):
     template_name = "index.html"
-
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["articles"] = Article.objects.filter(is_active=True).order_by("-write_date")[:10]
+        context["questions"] = Question.objects.filter(is_active=True).order_by("-write_date")[:10]
+        context["plans"] = SubscriptionPlan.objects.filter().order_by("-value")[:10]
+        return context
 
 class AboutPageView(TemplateView):
     template_name = "about.html"

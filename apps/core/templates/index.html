@@ -1,14 +1,71 @@
 {% extends 'base/base.html' %}
-{% block title %}
-صفحه اصلی
-{% endblock title %}
+
+{% block title %}صفحه اصلی{% endblock title %}
+
 {% block content %}
-<p>توسعه میتونه ساده تر از این باشه</p>
-<h1>به آزمایشگاه توسعه خوش آمدی!</h1>
-<p>
-    {% if not user.is_authenticated %}
-    <a class="btn btn-primary" href="{% url 'sign-up' %}">شروع رایگان</a>
-    <a class="btn btn-secondary" href="{% url 'login' %}">ورود</a>
-    {% endif %}
-</p>
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1 class="fw-bold">به آزمایشگاه توسعه خوش آمدی!</h1>
+        <p class="lead mb-4">توسعه میتونه ساده‌تر از این باشه</p>
+
+        {% if not user.is_authenticated %}
+        <a class="btn btn-primary btn-lg" href="{% url 'sign-up' %}">شروع رایگان</a>
+        <a class="btn btn-outline-secondary btn-lg" href="{% url 'login' %}">ورود</a>
+        {% endif %}
+    </div>
+
+    <h2 class="mb-3">آخرین مقالات</h2>
+    <div class="row g-3 mb-5">
+        {% for a in articles %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ a.title }}</h5>
+                    <p class="card-text text-muted small">{{ a.write_date }}</p>
+                    <a href="{{ a.get_absolute_url }}" class="btn btn-sm btn-primary">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">مقاله‌ای موجود نیست.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="mb-3">آخرین پرسش‌ها</h2>
+    <div class="row g-3 mb-5">
+        {% for q in questions %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">{{ q.name }}</h5>
+                    <p class="card-text text-muted small">{{ q.write_date }}</p>
+                    <a href="{{ q.get_absolute_url }}" class="btn btn-sm btn-secondary">مشاهده</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">پرسشی وجود ندارد.</p>
+        {% endfor %}
+    </div>
+
+    <h2 class="mb-3">پلن‌های اشتراک</h2>
+    <div class="row g-3">
+        {% for p in plans %}
+        <div class="col-md-4">
+            <div class="card h-100 border-primary shadow-sm">
+                <div class="card-body">
+                    <h4 class="card-title">{{ p.name }}</h4>
+                    <p class="card-text">{{ p.description }}</p>
+                    <p class="fw-bold">قیمت: {{ p.value }} تومان</p>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">پلنی وجود ندارد.</p>
+        {% endfor %}
+    </div>
+
+</div>
 {% endblock content %}
