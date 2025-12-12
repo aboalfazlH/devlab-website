@@ -11,3 +11,12 @@ class ApiModelAdmin(admin.ModelAdmin):
     readonly_fields = ('create_date',)
     date_hierarchy = 'create_date'
     ordering = ('create_date',)
+
+    def log_addition(self, request, obj, message):
+        pass
+
+    def log_change(self, request, obj, message):
+        pass
+
+    def log_deletion(self, request, obj, object_repr):
+        pass

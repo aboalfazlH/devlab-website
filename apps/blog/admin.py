@@ -16,7 +16,12 @@ class ArticleAdminForm(forms.ModelForm):
                 }
             ),
         }
-
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
 
 @admin.register(Article)
 class ArticleAdmin(admin.ModelAdmin):
@@ -116,8 +121,22 @@ class ArticleAdmin(admin.ModelAdmin):
     class Media:
         js = ("static/js/quill-init.js",)
 
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
+
+
 
 @admin.register(ArticleComment)
 class ArticleCommentAdmin(admin.ModelAdmin):
     list_display = ("id",)
     search_fields = ("id",)
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass

@@ -116,6 +116,13 @@ class CustomUserAdmin(UserAdmin):
         "following"
     )
 
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
+
 @admin.register(ProfileLink)
 class ProfileLinkAdmin(admin.ModelAdmin):
     '''Admin View for ProfileLink'''
@@ -124,3 +131,10 @@ class ProfileLinkAdmin(admin.ModelAdmin):
     list_filter = ('user','link_type')
     autocomplete_fields = ('user','link_type')
     search_fields = ('link_name','link_url','link_type__name')
+
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass

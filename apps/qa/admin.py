@@ -57,7 +57,12 @@ class QuestionAdmin(admin.ModelAdmin):
             },
         ),
     )
-
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
 
 @admin.register(Answer)
 class AnswerAdmin(admin.ModelAdmin):
@@ -92,3 +97,9 @@ class AnswerAdmin(admin.ModelAdmin):
         ),
     )
 
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
