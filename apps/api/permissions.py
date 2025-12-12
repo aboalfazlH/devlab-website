@@ -4,24 +4,14 @@ from .models import ApiModel
 
 
 class HasValidApiToken(BasePermission):
-    """
-    Permission class to validate incoming API tokens.
-    If the token is valid, the ApiModel instance is attached
-    to request.api_entry for further access.
-    """
-
+    """Validate API token passed in path"""
     def has_permission(self, request, view):
         token = view.kwargs.get("token")
         if not token:
             return False
-
-        hashed = hashlib.sha256(token.encode()).hexdigest()
-
+        hashed = ApiModel.hash_token(token)
         try:
-            api_entry = ApiModel.objects.get(token=hashed, is_active=True)
+            request.api_entry = ApiModel.objects.get(key=hashed, revoked_date__isnull=True)
+            return True
         except ApiModel.DoesNotExist:
             return False
-
-        # Attach api_entry to request for use in views
-        request.api_entry = api_entry
-        return True

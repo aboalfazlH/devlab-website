@@ -1,11 +1,16 @@
+
+from django.shortcuts import render
+from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import ApiModel
 from faker import Faker
 from django.utils.text import slugify
-
+from django.utils.decorators import method_decorator
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.generics import ListAPIView
-
+from django.views.decorators.csrf import csrf_exempt
 from apps.blog.models import Article
 from .permissions import HasValidApiToken
 from .serializers import ArticleSerializer, ArticleCreateSerializer
@@ -180,35 +185,49 @@ class DevelopLabGetArticlesApi(ListAPIView):
         ),
     },
 )
-class WriteArticle(APIView):
 
+@method_decorator(csrf_exempt, name='dispatch')
+class WriteArticle(APIView):
+    authentication_classes = []
     permission_classes = [HasValidApiToken]
 
     def post(self, request, token):
         data = request.data.copy()
 
-        if "slug" not in data or not data["slug"]:
-            data["slug"] = slugify(data.get("title", ""))
+        if not data.get("title"):
+            return Response({"title": ["This field is required."]}, status=400)
+        if not data.get("categories"):
+            return Response({"categories": ["This field is required."]}, status=400)
 
-        serializer = ArticleCreateSerializer(
-            data=data, context={"author": request.api_entry.user}
-        )
+        if not data.get("slug"):
+            data["slug"] = slugify(data["title"])
 
+        serializer = ArticleCreateSerializer(data=data)
         if not serializer.is_valid():
-            return Response(
-                {
-                    "status": 400,
-                    "errors": serializer.errors,
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            return Response({"errors": serializer.errors}, status=400)
 
-        article = serializer.save()
+        article = serializer.save(author=request.api_entry.user)
 
-        return Response(
-            {
-                "status": 200,
-                "description": f"Article '{article.title}' created successfully.",
-                "article_id": article.id,
-            }
+        return Response({
+            "status": 200,
+            "description": f"Article '{article.title}' created successfully.",
+            "article_id": article.id
+        })
+
+class ApiTokenCreateView(LoginRequiredMixin, View):
+    template_name = "api/token-create.html"
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name)
+
+    def post(self, request, *args, **kwargs):
+        raw_token = ApiModel.generate_token()
+        api_instance = ApiModel.objects.create(
+            api_name=request.POST.get("api_name", "default_name"),
+            key=ApiModel.hash_token(raw_token),
+            user=request.user
         )
+        return render(request, self.template_name, {
+            "api_token": raw_token,
+            "api_instance": api_instance
+        })

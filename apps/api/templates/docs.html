@@ -1,20 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="fa">
-<head>
-  <meta charset="UTF-8" />
-  <title>DevelopLab API Docs</title>
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist/swagger-ui.css">
-</head>
-<body>
-  <div id="swagger"></div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>DevelopLab API Docs</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/swagger-ui-dist/swagger-ui.css"
+    />
+  </head>
+  <body>
+    <div id="swagger"></div>
 
-  <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
-  <script>
-    SwaggerUIBundle({
-      url: "../../../static/docs/openapi.yaml",
-      dom_id: "#swagger"
-    });
-  </script>
-</body>
+    <script src="https://unpkg.com/swagger-ui-dist/swagger-ui-bundle.js"></script>
+    <script>
+      SwaggerUIBundle({
+        url: "../../../static/docs/openapi.yaml",
+        dom_id: "#swagger",
+        requestInterceptor: (req) => {
+          if (req.url && !req.url.endsWith("/")) {
+            req.url += "/";
+          }
+          return req;
+        },
+      });
+    </script>
+  </body>
 </html>

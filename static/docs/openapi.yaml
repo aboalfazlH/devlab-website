@@ -1,6 +1,5 @@
 openapi: 3.0.3
 
-
 paths:
   /api/articles/:
     get:
@@ -25,7 +24,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/Article'
 
-  /api/articles/{token}/write-article:
+  /api/articles/{token}/write-article/:
     post:
       operationId: articles_write_article_create
       summary: نوشتن مقاله جدید
@@ -43,39 +42,32 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ArticleCreateRequest'
+            examples:
+              sample:
+                value:
+                  title: "نمونه مقاله"
+                  description: "توضیحات مقاله"
+                  slug: "sample-article"
+                  categories: [1, 2]
+                  is_pin: false
+                  is_active: true
       responses:
         '200':
           description: ایجاد موفق
+          content:
+            application/json:
+              example:
+                status: 200
+                description: "Article 'نمونه مقاله' created successfully."
+                article_id: 12
         '400':
           description: خطای ورودی
-
-  /api/json-placeholder/:
-    get:
-      operationId: json_placeholder_retrieve
-      summary: ساخت داده‌های تست برای فرانت
-      parameters:
-        - in: query
-          name: articles
-          schema:
-            type: integer
-          description: تعداد مقالات (0 تا 100)
-        - in: query
-          name: lang
-          schema:
-            type: string
-          description: زبان تولید دیتا
-        - in: query
-          name: users
-          schema:
-            type: integer
-          description: تعداد کاربران (0 تا 100)
-      tags:
-        - json-placeholder
-      responses:
-        '200':
-          description: داده ایجاد شد
-        '400':
-          description: ورودی اشتباه
+          content:
+            application/json:
+              example:
+                status: 400
+                errors:
+                  title: ["This field is required."]
 
 components:
   schemas:
@@ -86,12 +78,12 @@ components:
           type: integer
         title:
           type: string
+        description:
+          type: string
         thumbnail:
           type: string
           format: uri
           nullable: true
-        description:
-          type: string
         views:
           type: integer
         author:
