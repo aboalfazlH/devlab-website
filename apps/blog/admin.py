@@ -140,3 +140,9 @@ class ArticleCommentAdmin(admin.ModelAdmin):
         pass
     def log_deletion(self, request, obj, object_repr):
         pass
+
+    def save_model(self, request, obj, form, change):
+        if obj.is_pin:
+            obj.pin()
+        else:
+            super().save_model(request, obj, form, change)

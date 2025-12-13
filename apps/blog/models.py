@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models,transaction
 from django.urls import reverse
 from django.utils import timezone
 
@@ -141,6 +141,28 @@ class ArticleComment(BaseComment):
     class Meta:
         verbose_name = "نظر"
         verbose_name_plural = "نظرات"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["article"],
+                condition=models.Q(is_pin=True),
+                name="unique_pinned_comment_per_article"
+            )
+        ]
+    
+    def pin(self):
+        """
+        Atomically pin this comment.
+        If another pinned comment exists for the same article,
+        it will be automatically unpinned.
+        """
+        with transaction.atomic():
+            ArticleComment.objects.select_for_update().filter(
+                article=self.article,
+                is_pin=True
+            ).exclude(pk=self.pk).update(is_pin=False)
+
+            self.is_pin = True
+            self.save(update_fields=["is_pin"])
 
     def __str__(self):
         return super().__str__()

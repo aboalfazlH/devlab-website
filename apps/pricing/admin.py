@@ -46,18 +46,43 @@ class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'product_type', 'price')
     list_filter = ('product_type',)
     search_fields = ('name',)
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
 
 class DiscountItemInline(admin.TabularInline):
     model = DiscountItem
     extra = 1
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
 
 @admin.register(DiscountCode)
 class DiscountCodeAdmin(admin.ModelAdmin):
     list_display = ('code', 'active', 'created_at', 'expires_at')
     inlines = [DiscountItemInline]
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
 
 @admin.register(DiscountCodeUsage)
 class DiscountCodeUsageAdmin(admin.ModelAdmin):
     list_display = ('discount_code', 'user', 'used_at')
     search_fields = ('discount_code__code', 'user__username')
     readonly_fields = ('discount_code', 'user', 'used_at')
+    def log_addition(self, request, obj, message):
+        pass
+    def log_change(self, request, obj, message):
+        pass
+    def log_deletion(self, request, obj, object_repr):
+        pass
+    
